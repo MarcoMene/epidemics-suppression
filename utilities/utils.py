@@ -8,7 +8,7 @@ class DeltaMeasure:
     Dirac delta positioned in position, with integral height
     """
     position: float
-    height: float
+    height: float = 1
 
 
 @dataclass
