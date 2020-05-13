@@ -1,6 +1,6 @@
-from utilities.model import r0, suppressed_r_from_test_cdf, R0_0, FS
+from utilities.model import r0, suppressed_r_from_test_cdf, R0, FS
 from utilities.plotting_utils import plot_functions, show_plot
-from utilities.utils import RealRange, DeltaMeasure, f_from_list, list_from_f, convolve
+from utilities.utils import RealRange, DeltaMeasure, f_from_list, list_from_f, convolve, round2
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 
@@ -46,7 +46,7 @@ r_tplot.set_xlabel('tau [days]')
 r_tplot.set_ylabel('r_t')
 r_tplot.grid(True)
 r_tplot.set_xlim(0, tau_max)
-r_tplot.set_ylim(0, R0_0 / 6)
+r_tplot.set_ylim(0, R0 / 6)
 
 tau_values = RealRange(0, tau_max, step).x_values
 
@@ -89,8 +89,8 @@ for i in range(0, N_iterations):
             f"FAc_t(infty)={FAc_t(tau_max)}  "
         )
     print(f"    FA_t(infty)={FA_t(tau_max)} \n"
-          f"    FT_t(infty)={round(FT_t_infty, 2)}, \n"
-          f"    R_t={round(R_t, 2)}")
+          f"    FT_t(infty)={round2(FT_t_infty)}, \n"
+          f"    R_t={round2(R_t)}")
 
     r_tplot.plot(tau_values, r_t_values, "r")
 
@@ -101,7 +101,7 @@ R_tplot.set_xlabel('t [days]')
 R_tplot.set_ylabel('R_t')
 R_tplot.grid(True)
 R_tplot.set_xlim(0, t_list[-1])
-R_tplot.set_ylim(0, R0_0)
+R_tplot.set_ylim(0, R0)
 R_tplot.plot(t_list, R_list, "r")
 
 FTinftyplot = fig.add_subplot(313)

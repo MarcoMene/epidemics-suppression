@@ -4,7 +4,7 @@
 from utilities.distributions import lognormal_cdf, gamma_density
 
 # R0, base value and parameters
-R0_0 = 1
+R0 = 1
 r0_alpha = 4.865916955
 r0_beta = 0.6487889273
 
@@ -13,7 +13,7 @@ def r0(tau: float) -> float:
     """
     Effective reproduction number density.
     """
-    return R0_0 * gamma_density(tau, r0_alpha, r0_beta)
+    return R0 * gamma_density(tau, r0_alpha, r0_beta)
 
 
 # Incubation period distribution, and parameters
@@ -39,3 +39,10 @@ def suppressed_r_from_test_cdf(r: callable, F_T: callable, xi: float) -> callabl
     Given a starting r0 density and a test CDF, calculates the new r profile, suppressed
     """
     return lambda tau: r(tau) * (1 - F_T(tau) * xi)
+
+
+def effectiveness_from_R(R: float):
+    """
+    Trivial effectiveness expressed as fraction of R reduction, in [0, 1] from min to max effectiveness
+    """
+    return 1. - R / R0

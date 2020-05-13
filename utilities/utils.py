@@ -52,3 +52,7 @@ def f_from_list(f_values: list, real_range: RealRange) -> callable:
         return f_values[i]
 
     return f
+
+
+def round2(number):
+    return round(number, 2)
