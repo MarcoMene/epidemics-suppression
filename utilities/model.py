@@ -3,27 +3,39 @@
 
 from utilities.distributions import lognormal_cdf, gamma_density
 
-# R0
+# R0, base value and parameters
 R0_0 = 1
+r0_alpha = 4.865916955
+r0_beta = 0.6487889273
 
-def r0_0(tau, alpha=4.865916955, beta=0.6487889273):
-    return R0_0 * gamma_density(tau, alpha, beta)
+
+def r0(tau: float) -> float:
+    """
+    Effective reproduction number density.
+    """
+    return R0_0 * gamma_density(tau, r0_alpha, r0_beta)
 
 
-# Incubation period distribution
-def FS(tau, mu=1.644, sigma=0.363, normalization=1.):
+# Incubation period distribution, and parameters
+incubation_mu = 1.644
+incubation_sigma = 0.363
+
+
+def FS(tau: float, normalization: float = 1.) -> float:
+    """
+    Symtoms onset distribution. Possibly improper (if normalization < 1).
+    """
     if tau > 0:
-        return normalization * lognormal_cdf(tau, mu, sigma)
+        return normalization * lognormal_cdf(tau, incubation_mu, incubation_sigma)
     return 0
 
 
-def FAs(tau, sS=1.):
-    return sS * FS(tau)
+# def FAs(tau: float, sS: float=1.) -> float:
+#     return sS * FS(tau)
 
 
-def make_r_t_from_test_cdf(r0_t, F_T, xi):
-    return lambda tau: r0_t(tau) * (1 - F_T(tau) * xi)
-
-
-def make_r_from_test_cdf(r0, F_T, xi):
-    return lambda t, tau: r0(t, tau) * (1 - F_T(t, tau) * xi)
+def suppressed_r_from_test_cdf(r: callable, F_T: callable, xi: float) -> callable:
+    """
+    Given a starting r0 density and a test CDF, calculates the new r profile, suppressed
+    """
+    return lambda tau: r(tau) * (1 - F_T(tau) * xi)
