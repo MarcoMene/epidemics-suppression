@@ -1,13 +1,17 @@
-import numpy as np
-from dataclasses import dataclass
 import matplotlib.pyplot as plt
-from scipy.stats import gamma, lognorm, norm
-import scipy.integrate as integrate
-from time import sleep
 
-def plot_functions(fs, x_min, x_max, step):
-    x_values = np.arange(x_min, x_max, step)
+from utilities.utils import RealRange
+
+
+def plot_functions(fs: list, real_range: RealRange):
+    """
+    Util to plot a list of functions in a range, with a step.
+    """
     for i, f in enumerate(fs):
-        plt.plot(x_values, [f(x) for x in x_values], label=str(i))
+        plt.plot(real_range.x_values, [f(x) for x in real_range.x_values], label=str(i))
     plt.legend()
+
+
+def show_plot():
+    print("Enjoy the plot!")
     plt.show()

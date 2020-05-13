@@ -1,13 +1,20 @@
 import numpy as np
-from dataclasses import dataclass
-import matplotlib.pyplot as plt
-from scipy.stats import gamma, lognorm, norm
-import scipy.integrate as integrate
-from time import sleep
+from scipy.stats import gamma, norm
 
-def gamma_density(x, alpha, beta):
-    return gamma.pdf(x, a=alpha, scale=1/beta)
+"""
+Wrappers of scipy distributions.
+"""
 
-def lognormal_cdf(x, mu, sigma):
-    return norm.cdf((np.log(x) - mu)/sigma)
 
+def gamma_density(x: float, alpha: float, beta: float) -> float:
+    """"
+    PDF of Gamma distribution.
+    """
+    return gamma.pdf(x, a=alpha, scale=1 / beta)
+
+
+def lognormal_cdf(x: float, mu: float, sigma: float) -> float:
+    """"
+    CDF of Log-Normal distribution.
+    """
+    return norm.cdf((np.log(x) - mu) / sigma)
