@@ -70,8 +70,8 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
                     tau)
                 return FA_recipient
 
-            FTapp_prev = lambda tau: Psy_prev * FTappsy_prev(tau) * (1 - Psy_prev) * FTappasy_prev(tau)
-            FTnoapp_prev = lambda tau: Psy_prev * FTnoappsy_prev(tau) * (1 - Psy_prev) * FTnoappasy_prev(tau)
+            FTapp_prev = lambda tau: Psy_prev * FTappsy_prev(tau) + (1 - Psy_prev) * FTappasy_prev(tau)
+            FTnoapp_prev = lambda tau: Psy_prev * FTnoappsy_prev(tau) + (1 - Psy_prev) * FTnoappasy_prev(tau)
 
             FN_source_app = lambda tau: scenario.sCapp * P_prev * FTapp_prev(tau) + (
                     1 - P_prev) * scenario.sCnoapp * FTnoapp_prev(tau)  # CDF of the time of notification for the
@@ -83,6 +83,7 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
                     1 - P_prev) * scenario.sCnoapp * FTnoapp_prev(tau)
             FAnoappsy_t = evolution(FN_source=FN_source_noapp, FAs_recipient=scenario.FAsnoapp, time_step=tildetauC_exp)
             FAnoappasy_t = evolution(FN_source=FN_source_noapp, FAs_recipient=lambda tau: 0, time_step=tildetauC_exp)
+
 
         FTappsy_t = convolve(FAappsy_t, scenario.p_DeltaATapp, RealRange(0, tau_max, integration_step))
         rappsy_t = suppressed_r_from_test_cdf(lambda tau: r0sy(tau), FTappsy_t, scenario.xi)
@@ -132,10 +133,12 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
         FTnoappsy_t_values = list_from_f(FTnoappsy_t, RealRange(0, tau_max, integration_step))
         FTnoappasy_t_values = list_from_f(FTnoappasy_t, RealRange(0, tau_max, integration_step))
         tildepC_list.append(tildepC_t_values)
+
         FTappsy_list.append(FTappsy_t_values)
         FTappasy_list.append(FTappasy_t_values)
         FTnoappsy_list.append(FTnoappsy_t_values)
         FTnoappasy_list.append(FTnoappasy_t_values)
+
         FTinftyapp_list.append(FTinftyapp)
         FTinftynoapp_list.append(FTinftynoapp)
         FTinfty_list.append(FTinfty)
@@ -156,6 +159,10 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
                   f" R_t={round2(R_t)} \n"
                   f" E(tauC)={round2(tauC_exp)} \n"
                   )
+            print(f" FAappsy(infty)={round2(FAappsy_t(tau_max))}")
+            print(f" FAappasy(infty)={round2(FAappasy_t(tau_max))}")
+            print(f" FAnoappsy(infty)={round2(FAnoappsy_t(tau_max))}")
+            print(f" FAnoappasy(infty)={round2(FAnoappasy_t(tau_max))}")
     return TimeEvolutionResult(
         t_list=t_list,
         FTinfty_list=FTinfty_list,
