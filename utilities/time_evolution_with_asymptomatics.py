@@ -1,6 +1,6 @@
 import warnings
 
-from utilities.model import r0sy, r0asy, suppressed_r_from_test_cdf, alpha
+from utilities.model import r0sy, r0asy, suppressed_r_from_test_cdf, fraction_symptomatics
 from utilities.scenario import Scenario
 from utilities.time_evolution import TimeEvolutionResult, tau_max, integration_step, integrate
 from utilities.utils import RealRange, f_from_list, list_from_f, convolve, round2
@@ -96,8 +96,8 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
         FTnoappasy_t = convolve(FAnoappasy_t, scenario.p_DeltaATnoapp, RealRange(0, tau_max, integration_step))
         rnoappasy_t = suppressed_r_from_test_cdf(lambda tau: r0asy(tau), FTnoappasy_t, scenario.xi)
 
-        rapp_t = lambda tau: alpha * rappsy_t(tau) + (1 - alpha) * rappasy_t(tau)
-        rnoapp_t = lambda tau: alpha * rnoappsy_t(tau) + (1 - alpha) * rnoappasy_t(tau)
+        rapp_t = lambda tau: fraction_symptomatics * rappsy_t(tau) + (1 - fraction_symptomatics) * rappasy_t(tau)
+        rnoapp_t = lambda tau: fraction_symptomatics * rnoappsy_t(tau) + (1 - fraction_symptomatics) * rnoappasy_t(tau)
 
         rsy_t = lambda tau: scenario.epsilon(t) * rappsy_t(tau) + (1 - scenario.epsilon(t)) * rnoappsy_t(tau)
         rasy_t = lambda tau: scenario.epsilon(t) * rappasy_t(tau) + (1 - scenario.epsilon(t)) * rnoappasy_t(tau)
@@ -113,14 +113,14 @@ def compute_time_evolution_with_asymptomatics(scenario: Scenario,
         tauC_exp = integrate(lambda tau: tau * r_t(tau) / R_t)
 
         P_t = scenario.epsilon(t) * Rapp_t / R_t
-        Psy_t = alpha * Rsy_t / R_t
+        Psy_t = fraction_symptomatics * Rsy_t / R_t
 
         tilder_t = lambda tau: P_t * rapp_t(tau) + (1 - P_t) * rnoapp_t(tau)
         tildeR_t = integrate(tilder_t)
         tildepC_t = lambda tau: tilder_t(tau) / tildeR_t
 
-        FTinftyapp = alpha * FTappsy_t(tau_max) + (1 - alpha) * FTappasy_t(tau_max)
-        FTinftynoapp = alpha * FTnoappsy_t(tau_max) + (1 - alpha) * FTnoappasy_t(tau_max)
+        FTinftyapp = fraction_symptomatics * FTappsy_t(tau_max) + (1 - fraction_symptomatics) * FTappasy_t(tau_max)
+        FTinftynoapp = fraction_symptomatics * FTnoappsy_t(tau_max) + (1 - fraction_symptomatics) * FTnoappasy_t(tau_max)
         FTinfty = scenario.epsilon(t) * FTinftyapp + (1 - scenario.epsilon(t)) * FTinftynoapp
 
         t_list.append(t)
