@@ -42,8 +42,8 @@ def FS(tau: float, normalization: float = 1.) -> float:
     Symtoms onset distribution. Possibly improper (if normalization < 1).
     """
     if tau > 0:
-        return 1
-        # return normalization * lognormal_cdf(tau, incubation_mu, incubation_sigma)
+        # return 1
+        return normalization * lognormal_cdf(tau, incubation_mu, incubation_sigma)
     return 0
 
 
