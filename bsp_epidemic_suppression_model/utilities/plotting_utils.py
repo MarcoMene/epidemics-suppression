@@ -11,15 +11,23 @@ from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity impor
 )
 
 
-def plot_functions(fs: list, real_range: RealRange, labels: Optional[List[str]]=None):
+def plot_functions(
+    fs: list,
+    real_range: RealRange,
+    labels: Optional[List[str]] = None,
+    title: Optional[str] = None,
+):
     """
     Util to plot a list of functions in a range, with a step.
     """
     if labels is None:
         labels = [str(i) for i in range(len(fs))]
     for i, f in enumerate(fs):
-        plt.plot(real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i])
+        plt.plot(
+            real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i]
+        )
     plt.legend()
+    plt.title(title)
     plt.show()
 
 
@@ -51,7 +59,7 @@ def plot_time_evolution(step_data_list: List[StepData]):
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.Rnoapp for step_data in step_data_list],
-        color="red",
+        color="blue",
         label="R no app",
     ),
     R_tplot.legend()
@@ -78,7 +86,7 @@ def plot_time_evolution(step_data_list: List[StepData]):
     # E_tplot.plot(
     #     [step_data.t for step_data in step_data_list],
     #     [effectiveness_from_R(R=step_data.Rnoapp_t) for step_data in step_data_list],
-    #     color="red",
+    #     color="blue",
     #     label="R no app - Eff",
     # ),
     # E_tplot.legend()
@@ -99,7 +107,7 @@ def plot_time_evolution(step_data_list: List[StepData]):
     Pplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.tildepapp for step_data in step_data_list],
-        color="yellow",
+        color="red",
         label="Prob. source has the app",
     )
     Pplot.plot(
@@ -117,7 +125,7 @@ def plot_time_evolution(step_data_list: List[StepData]):
     Pplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.FTnoapp_infty for step_data in step_data_list],
-        color="red",
+        color="blue",
         label="Prob. that infected without app tests positive",
     )
     Pplot.legend()
