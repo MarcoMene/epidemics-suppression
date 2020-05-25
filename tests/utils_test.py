@@ -1,4 +1,4 @@
-from utilities.utils import RealRange, list_from_f, f_from_list
+from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange, list_from_f, f_from_list
 
 
 def test_functions_to_lists():
@@ -14,4 +14,9 @@ def test_functions_to_lists():
 
     fl = f_from_list(lf, real_range)
 
-    assert all([fl(real_range.x_values[i]) == real_range.x_values[i] ** 2 for i in range(len(lf))])
+    assert all(
+        [
+            fl(real_range.x_values[i]) == real_range.x_values[i] ** 2
+            for i in range(len(lf))
+        ]
+    )

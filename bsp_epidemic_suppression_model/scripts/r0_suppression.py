@@ -1,6 +1,8 @@
-from utilities.model import r0, suppressed_r_from_test_cdf
-from utilities.plotting_utils import plot_functions, show_plot
-from utilities.utils import RealRange
+from bsp_epidemic_suppression_model.utilities import r0
+from bsp_epidemic_suppression_model.algorithm.model_blocks import suppressed_r_from_test_cdf
+from bsp_epidemic_suppression_model.utilities import plot_functions
+from _dev.old_stuff import show_plot
+from bsp_epidemic_suppression_model.utilities import RealRange
 import scipy.integrate as integrate
 from numpy import heaviside
 
