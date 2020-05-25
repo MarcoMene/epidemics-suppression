@@ -60,7 +60,7 @@ class TestCornerCases:
             x=last_step_data.papp, y=last_step_data.tildepapp, decimal=precision
         )
 
-    def test_only_simptoms_control(self):
+    def test_only_symptoms_control(self):
         # gs = [asymptomatic, symptomatic]
         tau_max = 30
         integration_step = 0.1
@@ -100,4 +100,4 @@ class TestCornerCases:
 if __name__ == "__main__":
 
     # TestCornerCases().test_no_epidemic_control_scenario()
-    TestCornerCases().test_only_simptoms_control()
+    TestCornerCases().test_only_symptoms_control()
