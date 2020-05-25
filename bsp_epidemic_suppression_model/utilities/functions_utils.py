@@ -11,6 +11,7 @@ class RealRange:
     """
     Range in real numbers
     """
+
     x_min: float
     x_max: float
     step: float
@@ -50,9 +51,6 @@ ProbabilityCumulativeFunction = Callable[[float], float]
 ImproperProbabilityCumulativeFunction = Callable[[float], float]
 
 
-
-
-
 def convolve(f1: callable, f2: callable, real_range: RealRange):
     if isinstance(f2, DeltaMeasure):
         return lambda x: f2.height * f1(x - f2.position)
@@ -70,6 +68,7 @@ def f_from_list(f_values: list, real_range: RealRange) -> callable:
     """
     List in a range to function
     """
+
     def f(x):
         if x < real_range.x_min:
             return f_values[0]
@@ -79,6 +78,3 @@ def f_from_list(f_values: list, real_range: RealRange) -> callable:
         return f_values[i]
 
     return f
-
-
-

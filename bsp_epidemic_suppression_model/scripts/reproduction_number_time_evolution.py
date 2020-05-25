@@ -1,10 +1,16 @@
 from bsp_epidemic_suppression_model.utilities.model import r0asy, r0sy
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.utilities.functions_utils import DeltaMeasure, RealRange
+from bsp_epidemic_suppression_model.utilities.functions_utils import (
+    DeltaMeasure,
+    RealRange,
+)
 from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_time_evolution
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import compute_time_evolution_with_severity
+from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
+    compute_time_evolution_with_severity,
+)
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -15,10 +21,7 @@ if __name__ == "__main__":
 
     scenario = Scenario(
         p_gs=[0.4, 0.6],
-        r0_gs=[
-            lambda t, tau: r0asy(tau),
-            lambda t, tau: r0sy(tau),
-        ],
+        r0_gs=[lambda t, tau: r0asy(tau), lambda t, tau: r0sy(tau),],
         t_0=0,
         ssapp=[0, 0.7],
         ssnoapp=[0, 0.5],
@@ -38,6 +41,3 @@ if __name__ == "__main__":
     )
 
     plot_time_evolution(step_data_list=step_data_list)
-
-
-

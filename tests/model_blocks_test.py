@@ -6,7 +6,11 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
 
 from bsp_epidemic_suppression_model.utilities.model import r0sy, r0asy
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import DeltaMeasure, RealRange, integrate
+from bsp_epidemic_suppression_model.utilities.functions_utils import (
+    DeltaMeasure,
+    RealRange,
+    integrate,
+)
 
 
 class TestAlgorithmBlock:
@@ -36,7 +40,7 @@ class TestAlgorithmBlock:
             FTnoapp_ti_gs=FTnoapp_ti_gs,
             r0_ti_gs=r0_ti_gs,
             xi=xi,
-            tau_max=tau_max
+            tau_max=tau_max,
         )
 
         R0_gs = [integrate(f=r0_ti_gs[g], a=0, b=tau_max) for g in [0, 1]]

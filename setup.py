@@ -11,11 +11,6 @@ if __name__ == "__main__":
         # author_email="anm@bendingspoons.com",
         # url="https://github.com/BendingSpoons/marketing-analytics-lib-python",
         packages=find_packages(exclude="demo"),
-        install_requires=[
-            "numpy",
-            "scipy",
-            "matplotlib",
-            "jupyter",
-        ],
+        install_requires=["numpy", "scipy", "matplotlib", "jupyter",],
         zip_safe=False,
     )

@@ -1,7 +1,10 @@
 """
 Data from the literature used in calculations
 """
-from bsp_epidemic_suppression_model.utilities.distributions import lognormal_cdf, gamma_density
+from bsp_epidemic_suppression_model.utilities.distributions import (
+    lognormal_cdf,
+    gamma_density,
+)
 
 
 # R0, base value and parameters

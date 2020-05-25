@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Callable
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import ImproperProbabilityDensity
+from bsp_epidemic_suppression_model.utilities.functions_utils import (
+    ImproperProbabilityDensity,
+)
 
 
 class ScenarioError(Exception):

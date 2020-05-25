@@ -1,4 +1,8 @@
-from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange, list_from_f, f_from_list
+from bsp_epidemic_suppression_model.utilities.functions_utils import (
+    RealRange,
+    list_from_f,
+    f_from_list,
+)
 
 
 def test_functions_to_lists():

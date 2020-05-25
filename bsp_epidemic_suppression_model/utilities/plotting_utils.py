@@ -6,7 +6,9 @@ from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
 
 from bsp_epidemic_suppression_model.utilities.model import R0
 
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import StepData
+from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
+    StepData,
+)
 
 
 def plot_functions(fs: list, real_range: RealRange):
@@ -17,7 +19,6 @@ def plot_functions(fs: list, real_range: RealRange):
         plt.plot(real_range.x_values, [f(x) for x in real_range.x_values], label=str(i))
     plt.legend()
     plt.show()
-
 
 
 def plot_time_evolution(step_data_list: List[StepData]):

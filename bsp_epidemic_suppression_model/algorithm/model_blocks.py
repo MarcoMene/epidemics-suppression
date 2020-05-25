@@ -119,7 +119,7 @@ def compute_r_R_components_from_FT(
     FTnoapp_ti_gs: List[ImproperProbabilityCumulativeFunction],
     r0_ti_gs: List[Callable[[float], float]],
     xi: float,
-    tau_max: float
+    tau_max: float,
 ):
     gs = range(len(FTapp_ti_gs))  # Values of severity G
 

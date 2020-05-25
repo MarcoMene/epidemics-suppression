@@ -20,25 +20,25 @@ from bsp_epidemic_suppression_model.utilities.functions_utils import (
 
 class StepData:
     def __init__(
-            self,
-            real_range: RealRange,
-            t: float,  # Absolute time of this step
-            papp: float,  # Probability that an infected at t has the app
-            tildepapp: float,  # Probability that a source infected at t has the app
-            tildepgs: List[
-                float
-            ],  # Probabilities that a source infected at t has each severity
-            EtauC: float,  # Expected contagion time for source infected at t
-            FT_infty: float,  # Probability that an infected at t tests positive
-            FTapp_infty: float,  # Probability that an infected at t with the app tests positive
-            FTnoapp_infty: float,  # Probability that an infected at t without the app tests positive
-            tildeFTapp: ImproperProbabilityCumulativeFunction,
-            # Distribution of testing time for source infected at t with app
-            tildeFTnoapp: ImproperProbabilityCumulativeFunction,
-            # Distribution of testing time for source infected at t with no app
-            R: float,
-            Rapp: float,
-            Rnoapp: float,
+        self,
+        real_range: RealRange,
+        t: float,  # Absolute time of this step
+        papp: float,  # Probability that an infected at t has the app
+        tildepapp: float,  # Probability that a source infected at t has the app
+        tildepgs: List[
+            float
+        ],  # Probabilities that a source infected at t has each severity
+        EtauC: float,  # Expected contagion time for source infected at t
+        FT_infty: float,  # Probability that an infected at t tests positive
+        FTapp_infty: float,  # Probability that an infected at t with the app tests positive
+        FTnoapp_infty: float,  # Probability that an infected at t without the app tests positive
+        tildeFTapp: ImproperProbabilityCumulativeFunction,
+        # Distribution of testing time for source infected at t with app
+        tildeFTnoapp: ImproperProbabilityCumulativeFunction,
+        # Distribution of testing time for source infected at t with no app
+        R: float,
+        Rapp: float,
+        Rnoapp: float,
     ):
         self.real_range = real_range
         self.t = t
@@ -50,24 +50,27 @@ class StepData:
         self.FTapp_infty = FTapp_infty
         self.FTnoapp_infty = FTnoapp_infty
         self.tildeFTapp_values = list_from_f(f=tildeFTapp, real_range=real_range)
-        self.tildeFTnoapp_values = list_from_f(
-            f=tildeFTnoapp, real_range=real_range)
+        self.tildeFTnoapp_values = list_from_f(f=tildeFTnoapp, real_range=real_range)
         self.R = R
         self.Rapp = Rapp
         self.Rnoapp = Rnoapp
 
     def tildeFTapp(self, tau):
-        return f_from_list(f_values=self.tildeFTapp_values, real_range=self.real_range)(tau)
+        return f_from_list(f_values=self.tildeFTapp_values, real_range=self.real_range)(
+            tau
+        )
 
     def tildeFTnoapp(self, tau):
-        return f_from_list(f_values=self.tildeFTnoapp_values, real_range=self.real_range)(tau)
+        return f_from_list(
+            f_values=self.tildeFTnoapp_values, real_range=self.real_range
+        )(tau)
 
 
 def compute_time_evolution_with_severity(
-        scenario: Scenario,
-        real_range: RealRange,
-        n_iterations: int = 6,
-        verbose: bool = True,
+    scenario: Scenario,
+    real_range: RealRange,
+    n_iterations: int = 6,
+    verbose: bool = True,
 ):
     # ### INTERNAL UTILS ###
     tau_max = real_range.x_max
@@ -143,7 +146,7 @@ def compute_time_evolution_with_severity(
         rapp_ti = lambda tau: sum(scenario.p_gs[g] * rapp_ti_gs[g](tau) for g in gs)
         rnoapp_ti = lambda tau: sum(scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs)
         r_ti = lambda tau: scenario.papp(t_i) * rapp_ti(tau) + (
-                1 - scenario.papp(t_i)
+            1 - scenario.papp(t_i)
         ) * rnoapp_ti(tau)
 
         Rapp_ti = sum(scenario.p_gs[g] * Rapp_ti_gs[g] for g in gs)
@@ -177,8 +180,8 @@ def compute_time_evolution_with_severity(
                 scenario.p_gs[g] * FAsnoapp_ti_gs_infty[g] for g in gs
             )
             FAs_ti_infty = (
-                    scenario.papp(t_i) * FAsapp_ti_infty
-                    + (1 - scenario.papp(t_i)) * FAsnoapp_ti_infty
+                scenario.papp(t_i) * FAsapp_ti_infty
+                + (1 - scenario.papp(t_i)) * FAsnoapp_ti_infty
             )
 
             FAs_recap = (
@@ -196,8 +199,8 @@ def compute_time_evolution_with_severity(
         FAapp_ti_infty = sum(scenario.p_gs[g] * FAapp_ti_gs_infty[g] for g in gs)
         FAnoapp_ti_infty = sum(scenario.p_gs[g] * FAnoapp_ti_gs_infty[g] for g in gs)
         FA_ti_infty = (
-                scenario.papp(t_i) * FAapp_ti_infty
-                + (1 - scenario.papp(t_i)) * FAnoapp_ti_infty
+            scenario.papp(t_i) * FAapp_ti_infty
+            + (1 - scenario.papp(t_i)) * FAnoapp_ti_infty
         )
 
         FA_recap = (
@@ -213,8 +216,8 @@ def compute_time_evolution_with_severity(
         FTapp_ti_infty = sum(scenario.p_gs[g] * FTapp_ti_gs_infty[g] for g in gs)
         FTnoapp_ti_infty = sum(scenario.p_gs[g] * FTnoapp_ti_gs_infty[g] for g in gs)
         FT_ti_infty = (
-                scenario.papp(t_i) * FTapp_ti_infty
-                + (1 - scenario.papp(t_i)) * FTnoapp_ti_infty
+            scenario.papp(t_i) * FTapp_ti_infty
+            + (1 - scenario.papp(t_i)) * FTnoapp_ti_infty
         )
 
         FT_recap = (
