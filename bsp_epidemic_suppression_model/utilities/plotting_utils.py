@@ -35,19 +35,19 @@ def plot_time_evolution(step_data_list: List[StepData]):
     R_tplot.set_ylim(0, R0)
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
-        [step_data.R_t for step_data in step_data_list],
+        [step_data.R for step_data in step_data_list],
         color="black",
         label="R",
     ),
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
-        [step_data.Rapp_t for step_data in step_data_list],
+        [step_data.Rapp for step_data in step_data_list],
         color="green",
         label="R app",
     ),
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
-        [step_data.Rnoapp_t for step_data in step_data_list],
+        [step_data.Rnoapp for step_data in step_data_list],
         color="red",
         label="R no app",
     ),

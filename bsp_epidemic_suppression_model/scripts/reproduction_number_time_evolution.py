@@ -1,8 +1,8 @@
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import compute_time_evolution_with_severity
 from bsp_epidemic_suppression_model.utilities.model import r0asy, r0sy
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import DeltaMeasure, RealRange
 from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_time_evolution
+from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import compute_time_evolution_with_severity
 
 import warnings
 warnings.filterwarnings("ignore")

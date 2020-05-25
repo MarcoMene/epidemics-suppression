@@ -52,14 +52,9 @@ class StepData:
         self.tildeFTapp_values = list_from_f(f=tildeFTapp, real_range=real_range)
         self.tildeFTnoapp_values = list_from_f(
             f=tildeFTnoapp, real_range=real_range)
-        self.R_t = R,
-        self.Rapp_t = Rapp,
-        self.Rnoapp_t = Rnoapp,
-
-    # Rapp_t: List[float]
-    # Rnoapp_t: List[float]
-    # tildeFTapp_values = List[float]
-    # tildeFTnoapp_values = List[float]
+        self.R = R
+        self.Rapp = Rapp
+        self.Rnoapp = Rnoapp
 
     def tildeFTapp(self, tau):
         return f_from_list(f_values=self.tildeFTapp_values, real_range=self.real_range)(tau)
