@@ -1,10 +1,9 @@
-from bsp_epidemic_suppression_model.utilities import r0
+from bsp_epidemic_suppression_model.utilities.model import r0
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     suppressed_r_from_test_cdf,
 )
-from bsp_epidemic_suppression_model.utilities import plot_functions
-from _dev.old_stuff import show_plot
-from bsp_epidemic_suppression_model.utilities import RealRange
+from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_functions
+from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
 import scipy.integrate as integrate
 from numpy import heaviside
 
@@ -22,4 +21,4 @@ suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
 print("suppressed R_0 =", suppressed_R_0)
 
 plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
-show_plot()
+
