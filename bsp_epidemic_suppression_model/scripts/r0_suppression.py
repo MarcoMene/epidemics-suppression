@@ -10,21 +10,34 @@ from numpy import heaviside
 tau_max = 30
 step = 0.05
 
-Deltat_test = 4
-ss = 0.2
 
-# tau_s = 10
-# F_Tsimple = lambda tau: heaviside(tau - tau_s, 1)
+def r0_suppression_with_fixed_testing_time():
+    tau_s = 10
 
-FT = lambda tau: ss * FS(tau - Deltat_test)
+    FT = lambda tau: heaviside(tau - tau_s, 1)
+    xi = 1.0  # Probability of (immediate) isolation given positive test
 
-xi = 1.  # Probability of (immediate) isolation given positive test
+    suppressed_r_0 = suppressed_r_from_test_cdf(r0, FT, xi)
+    suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
 
-suppressed_r_0 = suppressed_r_from_test_cdf(r0, FT, xi)
+    print("suppressed R_0 =", suppressed_R_0)
+    plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
 
 
-suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
-print("suppressed R_0 =", suppressed_R_0)
+def r0_suppression_due_to_symptoms_only():
+    Deltat_test = 4
+    ss = 0.2
 
-plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
+    FT = lambda tau: ss * FS(tau - Deltat_test)
+    xi = 1.0  # Probability of (immediate) isolation given positive test
 
+    suppressed_r_0 = suppressed_r_from_test_cdf(r0, FT, xi)
+    suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
+
+    print("suppressed R_0 =", suppressed_R_0)
+    plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
+
+
+if __name__ == "__main__":
+
+    r0_suppression_due_to_symptoms_only()
