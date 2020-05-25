@@ -6,7 +6,6 @@ from bsp_epidemic_suppression_model.utilities.distributions import (
     gamma_density,
 )
 
-
 # R0, base value and parameters
 R0 = 1
 r0_alpha = 4.865916955
@@ -20,7 +19,6 @@ def r0(tau: float) -> float:
 
 # Proportion of individuals who are symptomatics. Source: https://science.sciencemag.org/highwire/markup/744126/expansion?width=1000&height=500&iframe=true&postprocessors=highwire_figures%2Chighwire_math%2Chighwire_embed
 fraction_symptomatics = 0.6
-
 
 # Contributions to R0
 sy_contribute_to_R = 0.95

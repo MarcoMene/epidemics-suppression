@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.model import r0asy, r0sy
+from bsp_epidemic_suppression_model.utilities.model import r0asy, r0sy, fraction_symptomatics
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
@@ -20,23 +20,23 @@ if __name__ == "__main__":
     integration_step = 0.1
 
     scenario = Scenario(
-        p_gs=[0.4, 0.6],
+        p_gs=[1-fraction_symptomatics, fraction_symptomatics],
         r0_gs=[lambda t, tau: r0asy(tau), lambda t, tau: r0sy(tau),],
         t_0=0,
-        ssapp=[0, 0.7],
-        ssnoapp=[0, 0.5],
+        ssapp=[0, 0.2],
+        ssnoapp=[0, 0.2],
         scapp=0.8,
-        scnoapp=0.5,
-        xi=1,
+        scnoapp=0.,
+        xi=.9,
         papp=lambda tau: 0.6,
-        p_DeltaATapp=DeltaMeasure(position=1),
-        p_DeltaATnoapp=DeltaMeasure(position=2),
+        p_DeltaATapp=DeltaMeasure(position=0),
+        p_DeltaATnoapp=DeltaMeasure(position=0),
     )
 
     step_data_list = compute_time_evolution_with_severity(
         scenario=scenario,
         real_range=RealRange(0, tau_max, integration_step),
-        n_iterations=4,
+        n_iterations=6,
         verbose=True,
     )
 

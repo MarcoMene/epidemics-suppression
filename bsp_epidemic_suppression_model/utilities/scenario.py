@@ -12,6 +12,7 @@ class ScenarioError(Exception):
 
 @dataclass
 class Scenario:
+
     # Data from literature:
     p_gs: List[float]  # Probabilities of having given severity
     r0_gs: List[
