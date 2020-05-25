@@ -1,4 +1,6 @@
-from bsp_epidemic_suppression_model.utilities.model import r0asy, r0sy, fraction_symptomatics
+from bsp_epidemic_suppression_model.utilities.model import (
+    make_scenario_parameters_for_asymptomatics_symptomatics_model,
+)
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
@@ -19,15 +21,17 @@ if __name__ == "__main__":
     tau_max = 30
     integration_step = 0.1
 
+    p_gs, r0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+
     scenario = Scenario(
-        p_gs=[1-fraction_symptomatics, fraction_symptomatics],
-        r0_gs=[lambda t, tau: r0asy(tau), lambda t, tau: r0sy(tau),],
+        p_gs=p_gs,
+        r0_gs=r0_gs,
         t_0=0,
         ssapp=[0, 0.2],
         ssnoapp=[0, 0.2],
         scapp=0.8,
-        scnoapp=0.,
-        xi=.9,
+        scnoapp=0.0,
+        xi=0.9,
         papp=lambda tau: 0.6,
         p_DeltaATapp=DeltaMeasure(position=0),
         p_DeltaATnoapp=DeltaMeasure(position=0),

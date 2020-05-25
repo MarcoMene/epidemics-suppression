@@ -1,10 +1,7 @@
 from bsp_epidemic_suppression_model.utilities.model import (
-    r0,
-    r0asy,
-    r0sy,
     R0,
-    R0sy,
-    R0asy,
+    r0,
+    make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
@@ -27,7 +24,7 @@ class TestCornerCases:
 
         scenario = Scenario(
             p_gs=[1],
-            r0_gs=[lambda t, tau: r0(tau),],
+            r0_gs=[lambda t, tau: r0(tau)],
             t_0=0,
             ssapp=[0],
             ssnoapp=[0],
@@ -61,13 +58,16 @@ class TestCornerCases:
         )
 
     def test_only_symptoms_control(self):
-        # gs = [asymptomatic, symptomatic]
+
         tau_max = 30
         integration_step = 0.1
 
+        # gs = [asymptomatic, symptomatic]:
+        p_gs, r0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+
         scenario = Scenario(
-            p_gs=[0.4, 0.6],
-            r0_gs=[lambda t, tau: r0asy(tau), lambda t, tau: r0sy(tau),],
+            p_gs=p_gs,
+            r0_gs=r0_gs,
             t_0=0,
             ssapp=[0, 0.7],
             ssnoapp=[0, 0.5],
@@ -78,8 +78,6 @@ class TestCornerCases:
             p_DeltaATapp=DeltaMeasure(position=1),
             p_DeltaATnoapp=DeltaMeasure(position=2),
         )
-
-        print(R0, R0asy, R0sy)
 
         step_data_list = compute_time_evolution_with_severity(
             scenario=scenario,

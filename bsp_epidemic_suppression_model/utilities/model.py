@@ -8,7 +8,7 @@ from bsp_epidemic_suppression_model.utilities.distributions import (
 
 # R0, base value and parameters
 R0 = 1
-r0_alpha = 4.865916955
+r0_alpha = 4.865916955  # TODO: add source
 r0_beta = 0.6487889273
 
 
@@ -17,17 +17,21 @@ def r0(tau: float) -> float:
     return R0 * gamma_density(tau, r0_alpha, r0_beta)
 
 
+# DATA FOR A TWO-COMPONENTS MODEL (asymptomatics and symptomatics)
+
 # Proportion of individuals who are symptomatics. Source: https://science.sciencemag.org/highwire/markup/744126/expansion?width=1000&height=500&iframe=true&postprocessors=highwire_figures%2Chighwire_math%2Chighwire_embed
 fraction_symptomatics = 0.6
 
-# Contributions to R0
-sy_contribute_to_R = 0.95
+# Contributions to R0. Source: same paper
+contribution_of_symptomatics_to_R0 = 0.95
 
 R0sy = (
-    sy_contribute_to_R / fraction_symptomatics * R0 if fraction_symptomatics > 0 else 0
+    contribution_of_symptomatics_to_R0 / fraction_symptomatics * R0
+    if fraction_symptomatics > 0
+    else 0
 )
 R0asy = (
-    (1 - sy_contribute_to_R) / (1 - fraction_symptomatics) * R0
+    (1 - contribution_of_symptomatics_to_R0) / (1 - fraction_symptomatics) * R0
     if fraction_symptomatics < 1
     else 0
 )
@@ -41,6 +45,15 @@ def r0sy(tau: float):
 def r0asy(tau: float):
     """Effective default reproduction number density for asymptomatic individuals."""
     return R0asy * gamma_density(tau, r0_alpha, r0_beta)
+
+
+def make_scenario_parameters_for_asymptomatics_symptomatics_model():
+    """Returns the lists p_gs and r0_gs for the two-components model for the severity, namely for asymptomatic and
+    symptomatic individuals."""
+    p_gs = [1 - fraction_symptomatics, fraction_symptomatics]
+    r0_gs = [lambda t, tau: r0asy(tau), lambda t, tau: r0sy(tau)]
+
+    return p_gs, r0_gs
 
 
 # Incubation period distribution, and parameters
