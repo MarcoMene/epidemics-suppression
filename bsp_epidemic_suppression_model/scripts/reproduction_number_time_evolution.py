@@ -29,18 +29,18 @@ if __name__ == "__main__":
         t_0=0,
         ssapp=[0, 0.2],
         ssnoapp=[0, 0.2],
-        scapp=0.8,
-        scnoapp=0.0,
-        xi=0.9,
+        scapp=0.5,
+        scnoapp=0.2,
+        xi=0.7,
         papp=lambda tau: 0.6,
-        p_DeltaATapp=DeltaMeasure(position=0),
-        p_DeltaATnoapp=DeltaMeasure(position=0),
+        p_DeltaATapp=DeltaMeasure(position=2),
+        p_DeltaATnoapp=DeltaMeasure(position=4),
     )
 
     step_data_list = compute_time_evolution_with_severity(
         scenario=scenario,
         real_range=RealRange(0, tau_max, integration_step),
-        n_iterations=6,
+        n_iterations=8,
         verbose=True,
     )
 

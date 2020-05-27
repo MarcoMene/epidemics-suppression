@@ -10,6 +10,8 @@ from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity impor
     StepData,
 )
 
+from bsp_epidemic_suppression_model.utilities.functions_utils import round2
+from bsp_epidemic_suppression_model.utilities.model import effectiveness_from_R
 
 def plot_functions(
     fs: list,
@@ -37,6 +39,10 @@ def plot_time_evolution(step_data_list: List[StepData]):
 
     t_max = step_data_list[-1].t
 
+    R_last = step_data_list[-1].R
+    Rapp_last = step_data_list[-1].Rapp
+    Rnoapp_last = step_data_list[-1].Rnoapp
+
     # R
     R_tplot = fig.add_subplot(211)
     R_tplot.set_xlabel("t [days]")
@@ -48,19 +54,19 @@ def plot_time_evolution(step_data_list: List[StepData]):
         [step_data.t for step_data in step_data_list],
         [step_data.R for step_data in step_data_list],
         color="black",
-        label="R",
+        label=f"R -> {round2(R_last)}, Eff. {round2(effectiveness_from_R(R_last))}",
     ),
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.Rapp for step_data in step_data_list],
         color="green",
-        label="R app",
+        label=f"R app -> {round2(Rapp_last)}, Eff. {round2(effectiveness_from_R(Rapp_last))}",
     ),
     R_tplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.Rnoapp for step_data in step_data_list],
         color="blue",
-        label="R no app",
+        label=f"R no app -> {round2(Rnoapp_last)}, Eff. {round2(effectiveness_from_R(Rnoapp_last))}",
     ),
     R_tplot.legend()
 
