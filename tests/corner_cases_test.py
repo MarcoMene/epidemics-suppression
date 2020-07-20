@@ -92,7 +92,6 @@ class TestCornerCases:
         assert check_equality_with_precision(
             x=first_step_data.R, y=last_step_data.R, decimal=precision
         )
-        # TODO add more checks
 
 
 if __name__ == "__main__":

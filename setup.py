@@ -6,11 +6,11 @@ if __name__ == "__main__":
     setup(
         name="epidemic-suppression-model-lib-python",
         version="0.0.1",
-        # description="Library and repository for marketing-related tools and analyses.",
-        # author="Andrea Maiorana",
-        # author_email="anm@bendingspoons.com",
-        # url="https://github.com/BendingSpoons/marketing-analytics-lib-python",
+        description="Repo to support custom epidemics suppression calculations, according to the model of this paper: <ref_paper>",
+        author="Andrea Maiorana, Marco Meneghelli",
+        author_email="anm@bendingspoons.com, mm@bendingspoons.com",
+        url="https://github.com/MarcoMene/epidemics-suppression",
         packages=find_packages(exclude="demo"),
-        install_requires=["numpy", "scipy", "matplotlib", "jupyter",],
+        install_requires=["numpy", "scipy", "matplotlib", "jupyter"],
         zip_safe=False,
     )

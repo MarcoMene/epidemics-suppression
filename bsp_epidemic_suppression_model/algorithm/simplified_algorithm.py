@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from bsp_epidemic_suppression_model.utilities import round2
-from bsp_epidemic_suppression_model.utilities import gamma_cdf
-from bsp_epidemic_suppression_model.utilities import r0_alpha, r0_beta
+from bsp_epidemic_suppression_model.utilities.functions_utils import round2
+from bsp_epidemic_suppression_model.utilities.distributions import gamma_cdf
+from bsp_epidemic_suppression_model.utilities.model import r0_alpha, r0_beta
 
 
 def approximated_suppressed_R(
