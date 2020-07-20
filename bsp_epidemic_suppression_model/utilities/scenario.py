@@ -7,11 +7,16 @@ from bsp_epidemic_suppression_model.utilities.functions_utils import (
 
 
 class ScenarioError(Exception):
-    """Raised when scenario makes no sense"""
+    def __init__(self, *args: object) -> None:
+        super().__init__("""Scenario makes no sense""", *args)
 
 
 @dataclass
 class Scenario:
+    """
+    Wraps a simulation scenario, completely described by a set of parameters.
+    For the meaning of parameters see the paper: <ref_paper>
+    """
 
     # Data from literature:
     p_gs: List[float]  # Probabilities of having given severity

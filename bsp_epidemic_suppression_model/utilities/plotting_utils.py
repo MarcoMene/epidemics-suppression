@@ -13,6 +13,7 @@ from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity impor
 from bsp_epidemic_suppression_model.utilities.functions_utils import round2
 from bsp_epidemic_suppression_model.utilities.model import effectiveness_from_R
 
+
 def plot_functions(
     fs: list,
     real_range: RealRange,
@@ -34,6 +35,9 @@ def plot_functions(
 
 
 def plot_time_evolution(step_data_list: List[StepData]):
+    """
+    Plots time evolution of epidemics-suppression: effective reproduction numbers and other KPIs.
+    """
     fig = plt.figure(figsize=(10, 15))
     # fig.suptitle(f"{scenario}")
 

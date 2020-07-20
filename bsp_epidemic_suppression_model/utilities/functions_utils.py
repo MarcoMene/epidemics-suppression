@@ -22,10 +22,16 @@ class RealRange:
 
 
 def round2(number: float):
+    """
+    Rounds a number to the second decimal
+    """
     return round(number, 2)
 
 
 def round2_list(l: List[float]):
+    """
+    Rounds a list of numbers to the second decimal
+    """
     return [round2(number) for number in l]
 
 
@@ -52,9 +58,13 @@ ImproperProbabilityCumulativeFunction = Callable[[float], float]
 
 
 def convolve(f1: callable, f2: callable, real_range: RealRange):
+    """
+    Returns a function which is the convolution product of f1 and f2.
+    So far works only with f2 = dirac-delta
+    """
     if isinstance(f2, DeltaMeasure):
         return lambda x: f2.height * f1(x - f2.position)
-    raise ValueError("Not implemented yet")  # TODO: add
+    raise ValueError("Not implemented yet")
 
 
 def list_from_f(f: callable, real_range: RealRange) -> list:

@@ -1,6 +1,7 @@
 from bsp_epidemic_suppression_model.utilities.model import (
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
-    effectiveness_from_R)
+    effectiveness_from_R,
+)
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
@@ -57,6 +58,6 @@ if __name__ == "__main__":
                     R_last = step_data_list[-1].R
                     eff = effectiveness_from_R(R_last)
 
-                    print(f" {sS} & {sC} & {xi} & {papp} & {round2(R_last)} & {round2(eff)} \\\ ")
-
-
+                    print(
+                        f" {sS} & {sC} & {xi} & {papp} & {round2(R_last)} & {round2(eff)} \\\ "
+                    )

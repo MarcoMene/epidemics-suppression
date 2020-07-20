@@ -134,3 +134,6 @@ dmypy.json
 # Custom
 */_dev
 /_dev
+
+notebooks/.ipynb_checkpoints
+notebooks/.ipynb_checkpoints/*

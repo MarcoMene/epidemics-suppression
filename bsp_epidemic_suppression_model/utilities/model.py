@@ -1,14 +1,15 @@
-"""
-Data from the literature used in calculations
-"""
 from bsp_epidemic_suppression_model.utilities.distributions import (
     lognormal_cdf,
     gamma_density,
 )
 
+"""
+Data from the literature used in calculations
+"""
+
 # R0, base value and parameters
 R0 = 1
-r0_alpha = 4.865916955  # TODO: add source
+r0_alpha = 4.865916955
 r0_beta = 0.6487889273
 
 
