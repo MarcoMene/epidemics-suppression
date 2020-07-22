@@ -39,7 +39,6 @@ def plot_time_evolution(step_data_list: List[StepData]):
     Plots time evolution of epidemics-suppression: effective reproduction numbers and other KPIs.
     """
     fig = plt.figure(figsize=(10, 15))
-    # fig.suptitle(f"{scenario}")
 
     t_max = step_data_list[-1].t
 
@@ -73,33 +72,6 @@ def plot_time_evolution(step_data_list: List[StepData]):
         label=f"R no app -> {round2(Rnoapp_last)}, Eff. {round2(effectiveness_from_R(Rnoapp_last))}",
     ),
     R_tplot.legend()
-
-    # # Effectiveness
-    # E_tplot = fig.add_subplot(211)
-    # E_tplot.set_xlabel("t [days]")
-    # E_tplot.set_ylabel("E_t")
-    # E_tplot.grid(True)
-    # E_tplot.set_xlim(0, t_max)
-    # E_tplot.set_ylim(0, 1)
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.R_t) for step_data in step_data_list],
-    #     color="black",
-    #     label="R - Eff",
-    # ),
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.Rapp_t) for step_data in step_data_list],
-    #     color="green",
-    #     label="R app - Eff",
-    # ),
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.Rnoapp_t) for step_data in step_data_list],
-    #     color="blue",
-    #     label="R no app - Eff",
-    # ),
-    # E_tplot.legend()
 
     # Other metrics
     Pplot = fig.add_subplot(212)

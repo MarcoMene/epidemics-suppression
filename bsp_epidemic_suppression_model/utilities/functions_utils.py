@@ -6,6 +6,22 @@ from scipy import integrate as sci_integrate
 
 
 @dataclass
+class DeltaMeasure:
+    """
+    Dirac delta centered in position and rescaled by height.
+    """
+
+    position: float
+    height: float = 1
+
+
+# Data types for (improper) PDFs and CDFs
+ImproperProbabilityDensity = Union[Callable[[float], float], DeltaMeasure]
+ProbabilityCumulativeFunction = Callable[[float], float]
+ImproperProbabilityCumulativeFunction = Callable[[float], float]
+
+
+@dataclass
 class RealRange:
     """
     Range in real numbers
@@ -23,6 +39,31 @@ class RealRange:
         ]
 
 
+def list_from_f(f: Callable[[float], float], real_range: RealRange) -> List[float]:
+    """
+    Samples a function f over a given range into a list of values.
+    """
+    return [f(x) for x in real_range.x_values]
+
+
+def f_from_list(
+    f_values: List[float], real_range: RealRange
+) -> Callable[[float], float]:
+    """
+    Interpolates a list of samples over a range into a function.
+    """
+
+    def f(x):
+        if x < real_range.x_min:
+            return f_values[0]
+        if x > real_range.x_max:
+            return f_values[-1]
+        i = int((x - real_range.x_min) / real_range.step)
+        return f_values[i]
+
+    return f
+
+
 def round2(number: float) -> float:
     """
     Rounds a number to the second decimal.
@@ -37,29 +78,6 @@ def round2_list(l: List[float]) -> List[float]:
     return [round2(number) for number in l]
 
 
-def integrate(f: Callable[[float], float], a: float, b: float) -> float:
-    """
-    Integral of f from a to b.
-    """
-    return sci_integrate.quad(f, a, b)[0]
-
-
-@dataclass
-class DeltaMeasure:
-    """
-    Dirac delta centered in position and rescaled by height.
-    """
-
-    position: float
-    height: float = 1
-
-
-# Data types for (improper) PDFs and CDFs
-ImproperProbabilityDensity = Union[Callable[[float], float], DeltaMeasure]
-ProbabilityCumulativeFunction = Callable[[float], float]
-ImproperProbabilityCumulativeFunction = Callable[[float], float]
-
-
 def convolve(f: Callable[[float], float], delta: DeltaMeasure):
     """
     Computes the convolution of a function f and a DeltaMeasure delta.
@@ -67,24 +85,8 @@ def convolve(f: Callable[[float], float], delta: DeltaMeasure):
     return lambda x: delta.height * f(x - delta.position)
 
 
-def list_from_f(f: Callable[[float], float], real_range: RealRange) -> List[float]:
+def integrate(f: Callable[[float], float], a: float, b: float) -> float:
     """
-    Samples a function over a given range into a list of values.
+    Integral of a function f from a to b.
     """
-    return [f(x) for x in real_range.x_values]
-
-
-def f_from_list(f_values: List[float], real_range: RealRange) -> callable:
-    """
-    Interpolates a list of samples over a range into a function.
-    """
-
-    def f(x):
-        if x < real_range.x_min:
-            return f_values[0]
-        if x > real_range.x_max:
-            return f_values[-1]
-        i = int((x - real_range.x_min) / real_range.step)
-        return f_values[i]
-
-    return f
+    return sci_integrate.quad(f, a, b)[0]
