@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.distributions import gamma_density
+from bsp_epidemic_suppression_model.utilities.distributions import gamma_pdf
 from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_functions
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
@@ -6,7 +6,7 @@ from bsp_epidemic_suppression_model.utilities.functions_utils import (
     RealRange,
 )
 
-f1 = lambda x: gamma_density(x - 10, 4, 1)
+f1 = lambda x: gamma_pdf(x - 10, 4, 1)
 f2 = DeltaMeasure(position=5, height=1)
 
 g = convolve(f1, f2, RealRange(0, 30, 1))

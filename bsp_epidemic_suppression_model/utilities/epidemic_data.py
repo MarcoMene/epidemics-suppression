@@ -13,7 +13,7 @@ from typing import Tuple, List, Callable
 
 from bsp_epidemic_suppression_model.utilities.distributions import (
     lognormal_cdf,
-    gamma_density,
+    gamma_pdf,
 )
 
 
@@ -25,7 +25,7 @@ beta = 0.6487889273
 
 def beta0(tau: float) -> float:
     """Default infectiousness distribution."""
-    return R0 * gamma_density(tau, alpha, beta)
+    return R0 * gamma_pdf(tau, alpha, beta)
 
 
 p_sym = 0.6  # Fraction of infected individuals who are symptomatic.
@@ -47,12 +47,12 @@ assert R0 == p_sym * R0_sym + p_asy * R0_asy
 
 def beta0_asy(tau: float):
     """Default infectiousness distribution for asymptomatic individuals."""
-    return R0_asy * gamma_density(tau, alpha, beta)
+    return R0_asy * gamma_pdf(tau, alpha, beta)
 
 
 def beta0_sym(tau: float):
     """Default infectiousness distribution for symptomatic individuals."""
-    return R0_sym * gamma_density(tau, alpha, beta)
+    return R0_sym * gamma_pdf(tau, alpha, beta)
 
 
 def make_scenario_parameters_for_asymptomatics_symptomatics_model() -> Tuple[

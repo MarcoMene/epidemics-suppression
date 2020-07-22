@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import gamma, norm
 
 
-def gamma_density(x: float, alpha: float, beta: float) -> float:
+def gamma_pdf(x: float, alpha: float, beta: float) -> float:
     """"
     PDF of gamma distribution.
     """
