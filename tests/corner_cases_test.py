@@ -1,10 +1,10 @@
-from bsp_epidemic_suppression_model.utilities.epidemic_data import (
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
     R0,
     beta0,
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
-from bsp_epidemic_suppression_model.utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
 )

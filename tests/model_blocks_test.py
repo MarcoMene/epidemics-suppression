@@ -4,9 +4,12 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_r_R_components_from_FT,
 )
 
-from bsp_epidemic_suppression_model.utilities.epidemic_data import beta0_sym, beta0_asy
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+    beta0_sym,
+    beta0_asy,
+)
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
     integrate,

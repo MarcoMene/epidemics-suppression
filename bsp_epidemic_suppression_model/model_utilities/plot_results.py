@@ -1,37 +1,11 @@
-from typing import List, Optional
+from typing import List
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
 from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
-
-from bsp_epidemic_suppression_model.utilities.epidemic_data import R0
-
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    StepData,
-)
-
-from bsp_epidemic_suppression_model.utilities.functions_utils import round2
-
-
-def plot_functions(
-    fs: list,
-    real_range: RealRange,
-    labels: Optional[List[str]] = None,
-    title: Optional[str] = None,
-):
-    """
-    Util to plot a list of functions in a range, with a step.
-    """
-    if labels is None:
-        labels = [str(i) for i in range(len(fs))]
-    for i, f in enumerate(fs):
-        plt.plot(
-            real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i]
-        )
-    plt.legend()
-    plt.title(title)
-    plt.show()
+from bsp_epidemic_suppression_model.algorithm.step_data import StepData
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import round2
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import R0
 
 
 def plot_time_evolution(step_data_list: List[StepData]):

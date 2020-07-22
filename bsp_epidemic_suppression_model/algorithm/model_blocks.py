@@ -1,7 +1,7 @@
 from typing import List, Callable
 
-from bsp_epidemic_suppression_model.utilities.epidemic_data import R0
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import R0
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     RealRange,
     convolve,
     ImproperProbabilityDensity,

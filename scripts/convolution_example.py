@@ -1,6 +1,6 @@
-from bsp_epidemic_suppression_model.utilities.distributions import gamma_pdf
-from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_functions
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.distributions import gamma_pdf
+from bsp_epidemic_suppression_model.math_utilities.plotting_utils import plot_functions
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     convolve,
     RealRange,

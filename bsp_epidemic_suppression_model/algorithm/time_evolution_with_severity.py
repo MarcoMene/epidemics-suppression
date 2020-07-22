@@ -1,69 +1,22 @@
 from typing import List
 
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
+    RealRange,
+    round2,
+    round2_list,
+    integrate,
+)
+
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import FS
+from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
+
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_FA_from_FAs_and_previous_step_data,
     compute_FT_from_FA_and_DeltaAT,
     compute_r_R_components_from_FT,
 )
-from bsp_epidemic_suppression_model.utilities.epidemic_data import FS
-from bsp_epidemic_suppression_model.utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
-    RealRange,
-    list_from_f,
-    f_from_list,
-    round2,
-    round2_list,
-    ImproperProbabilityCumulativeFunction,
-    integrate,
-)
+from bsp_epidemic_suppression_model.algorithm.step_data import StepData
 
-
-class StepData:
-    def __init__(
-        self,
-        real_range: RealRange,
-        t: float,  # Absolute time of this step
-        papp: float,  # Probability that an infected at t has the app
-        tildepapp: float,  # Probability that a source infected at t has the app
-        tildepgs: List[
-            float
-        ],  # Probabilities that a source infected at t has each severity
-        EtauC: float,  # Expected contagion time for source infected at t
-        FT_infty: float,  # Probability that an infected at t tests positive
-        FTapp_infty: float,  # Probability that an infected at t with the app tests positive
-        FTnoapp_infty: float,  # Probability that an infected at t without the app tests positive
-        tildeFTapp: ImproperProbabilityCumulativeFunction,
-        # Distribution of testing time for source infected at t with app
-        tildeFTnoapp: ImproperProbabilityCumulativeFunction,
-        # Distribution of testing time for source infected at t with no app
-        R: float,
-        Rapp: float,
-        Rnoapp: float,
-    ):
-        self.real_range = real_range
-        self.t = t
-        self.papp = papp
-        self.tildepapp = tildepapp
-        self.tildepgs = tildepgs
-        self.EtauC = EtauC
-        self.FT_infty = FT_infty
-        self.FTapp_infty = FTapp_infty
-        self.FTnoapp_infty = FTnoapp_infty
-        self.tildeFTapp_values = list_from_f(f=tildeFTapp, real_range=real_range)
-        self.tildeFTnoapp_values = list_from_f(f=tildeFTnoapp, real_range=real_range)
-        self.R = R
-        self.Rapp = Rapp
-        self.Rnoapp = Rnoapp
-
-    def tildeFTapp(self, tau):
-        return f_from_list(f_values=self.tildeFTapp_values, real_range=self.real_range)(
-            tau
-        )
-
-    def tildeFTnoapp(self, tau):
-        return f_from_list(
-            f_values=self.tildeFTnoapp_values, real_range=self.real_range
-        )(tau)
 
 
 def compute_time_evolution_with_severity(

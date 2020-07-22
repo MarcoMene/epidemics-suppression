@@ -11,7 +11,7 @@ and ... # TODO Add source for alpha and beta
 """
 from typing import Tuple, List, Callable
 
-from bsp_epidemic_suppression_model.utilities.distributions import (
+from bsp_epidemic_suppression_model.math_utilities.distributions import (
     lognormal_cdf,
     gamma_pdf,
 )

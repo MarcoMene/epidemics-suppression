@@ -24,7 +24,7 @@ ImproperProbabilityCumulativeFunction = Callable[[float], float]
 @dataclass
 class RealRange:
     """
-    Range in real numbers
+    Range in real numbers.
     """
 
     x_min: float

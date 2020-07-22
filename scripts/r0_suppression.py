@@ -1,9 +1,9 @@
-from bsp_epidemic_suppression_model.utilities.epidemic_data import beta0, FS
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import beta0, FS
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     suppressed_r_from_test_cdf,
 )
-from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_functions
-from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
+from bsp_epidemic_suppression_model.math_utilities.plotting_utils import plot_functions
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import RealRange
 import scipy.integrate as integrate
 from numpy import heaviside
 

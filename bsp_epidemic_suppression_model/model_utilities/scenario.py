@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Callable
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     ImproperProbabilityDensity,
 )
 
@@ -17,6 +17,7 @@ class Scenario:
     Wraps a simulation scenario, completely described by a set of parameters.
     For the meaning of parameters see the paper: <ref_paper>
     """
+
     # Data from literature:
     p_gs: List[float]  # Probabilities of having given severity
     r0_gs: List[
