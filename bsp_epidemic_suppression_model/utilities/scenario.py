@@ -17,7 +17,6 @@ class Scenario:
     Wraps a simulation scenario, completely described by a set of parameters.
     For the meaning of parameters see the paper: <ref_paper>
     """
-
     # Data from literature:
     p_gs: List[float]  # Probabilities of having given severity
     r0_gs: List[

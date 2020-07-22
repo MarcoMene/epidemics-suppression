@@ -5,7 +5,7 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_FT_from_FA_and_DeltaAT,
     compute_r_R_components_from_FT,
 )
-from bsp_epidemic_suppression_model.utilities.model import FS
+from bsp_epidemic_suppression_model.utilities.epidemic_data import FS
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     RealRange,

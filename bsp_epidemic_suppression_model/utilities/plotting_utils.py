@@ -3,15 +3,15 @@ from typing import List, Optional
 import matplotlib.pyplot as plt
 
 from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
+from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
 
-from bsp_epidemic_suppression_model.utilities.model import R0
+from bsp_epidemic_suppression_model.utilities.epidemic_data import R0
 
 from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
     StepData,
 )
 
 from bsp_epidemic_suppression_model.utilities.functions_utils import round2
-from bsp_epidemic_suppression_model.utilities.model import effectiveness_from_R
 
 
 def plot_functions(

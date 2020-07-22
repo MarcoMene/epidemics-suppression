@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.model import FS
+from bsp_epidemic_suppression_model.utilities.epidemic_data import FS
 from bsp_epidemic_suppression_model.utilities.plotting_utils import plot_functions
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     RealRange,

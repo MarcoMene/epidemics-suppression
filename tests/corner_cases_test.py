@@ -1,6 +1,6 @@
-from bsp_epidemic_suppression_model.utilities.model import (
+from bsp_epidemic_suppression_model.utilities.epidemic_data import (
     R0,
-    r0,
+    beta0,
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
@@ -24,7 +24,7 @@ class TestCornerCases:
 
         scenario = Scenario(
             p_gs=[1],
-            r0_gs=[lambda t, tau: r0(tau)],
+            r0_gs=[lambda t, tau: beta0(tau)],
             t_0=0,
             ssapp=[0],
             ssnoapp=[0],

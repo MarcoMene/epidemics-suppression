@@ -1,5 +1,6 @@
 from typing import List, Callable
 
+from bsp_epidemic_suppression_model.utilities.epidemic_data import R0
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     RealRange,
     convolve,
@@ -93,13 +94,9 @@ def compute_FT_from_FA_and_DeltaAT(
     FTapp_ti_gs = []
     FTnoapp_ti_gs = []
     for g in gs:
-        FTapp_ti_g = convolve(
-            f1=FAapp_ti_gs[g], f2=p_DeltaATapp, real_range=real_range,
-        )
+        FTapp_ti_g = convolve(f=FAapp_ti_gs[g], delta=p_DeltaATapp)
         FTapp_ti_gs.append(FTapp_ti_g)
-        FTnoapp_ti_g = convolve(
-            f1=FAnoapp_ti_gs[g], f2=p_DeltaATnoapp, real_range=real_range,
-        )
+        FTnoapp_ti_g = convolve(f=FAnoapp_ti_gs[g], delta=p_DeltaATnoapp)
         FTnoapp_ti_gs.append(FTnoapp_ti_g)
 
     return FTapp_ti_gs, FTnoapp_ti_gs
@@ -146,3 +143,10 @@ def compute_r_R_components_from_FT(
         Rnoapp_ti_gs.append(Rnoapp_ti_g)
 
     return rapp_ti_gs, rnoapp_ti_gs, Rapp_ti_gs, Rnoapp_ti_gs
+
+
+def effectiveness_from_R(R: float) -> float:
+    """
+    Effectiveness of the isolation measures, expressed as fraction of R reduction.
+    """
+    return 1.0 - R / R0

@@ -1,12 +1,12 @@
-from bsp_epidemic_suppression_model.utilities.model import (
+from bsp_epidemic_suppression_model.utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
-    effectiveness_from_R,
 )
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
 )
+from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
 from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
     compute_time_evolution_with_severity,
 )

@@ -1,4 +1,3 @@
-import numpy as np
 from dataclasses import dataclass
 
 from typing import List, Union, Callable
@@ -18,26 +17,29 @@ class RealRange:
 
     @property
     def x_values(self):
-        return np.arange(self.x_min, self.x_max + self.step, self.step)
+        return [
+            self.x_min + n * self.step
+            for n in range(int((self.x_max - self.x_min) / self.step) + 1)
+        ]
 
 
-def round2(number: float):
+def round2(number: float) -> float:
     """
-    Rounds a number to the second decimal
+    Rounds a number to the second decimal.
     """
     return round(number, 2)
 
 
-def round2_list(l: List[float]):
+def round2_list(l: List[float]) -> List[float]:
     """
-    Rounds a list of numbers to the second decimal
+    Rounds a list of numbers to the second decimal.
     """
     return [round2(number) for number in l]
 
 
-def integrate(f: callable, a: float, b: float) -> float:
+def integrate(f: Callable[[float], float], a: float, b: float) -> float:
     """
-    Integral of f from a to b
+    Integral of f from a to b.
     """
     return sci_integrate.quad(f, a, b)[0]
 
@@ -45,38 +47,36 @@ def integrate(f: callable, a: float, b: float) -> float:
 @dataclass
 class DeltaMeasure:
     """
-    Dirac delta positioned in position, rescaled by height
+    Dirac delta centered in position and rescaled by height.
     """
 
     position: float
     height: float = 1
 
 
+# Data types for (improper) PDFs and CDFs
 ImproperProbabilityDensity = Union[Callable[[float], float], DeltaMeasure]
 ProbabilityCumulativeFunction = Callable[[float], float]
 ImproperProbabilityCumulativeFunction = Callable[[float], float]
 
 
-def convolve(f1: callable, f2: callable, real_range: RealRange):
+def convolve(f: Callable[[float], float], delta: DeltaMeasure):
     """
-    Returns a function which is the convolution product of f1 and f2.
-    So far works only with f2 = dirac-delta
+    Computes the convolution of a function f and a DeltaMeasure delta.
     """
-    if isinstance(f2, DeltaMeasure):
-        return lambda x: f2.height * f1(x - f2.position)
-    raise ValueError("Not implemented yet")
+    return lambda x: delta.height * f(x - delta.position)
 
 
-def list_from_f(f: callable, real_range: RealRange) -> list:
+def list_from_f(f: Callable[[float], float], real_range: RealRange) -> List[float]:
     """
-    Function to list in a range.
+    Samples a function over a given range into a list of values.
     """
     return [f(x) for x in real_range.x_values]
 
 
-def f_from_list(f_values: list, real_range: RealRange) -> callable:
+def f_from_list(f_values: List[float], real_range: RealRange) -> callable:
     """
-    List in a range to function
+    Interpolates a list of samples over a range into a function.
     """
 
     def f(x):

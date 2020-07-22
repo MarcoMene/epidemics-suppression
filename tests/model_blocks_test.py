@@ -4,7 +4,7 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_r_R_components_from_FT,
 )
 
-from bsp_epidemic_suppression_model.utilities.model import r0sy, r0asy
+from bsp_epidemic_suppression_model.utilities.epidemic_data import beta0_sym, beta0_asy
 
 from bsp_epidemic_suppression_model.utilities.functions_utils import (
     DeltaMeasure,
@@ -17,7 +17,7 @@ class TestAlgorithmBlock:
     """Tests each block of the algorithm separately"""
 
     def test_R_suppression(self):
-        r0_ti_gs = [r0asy, r0sy]
+        r0_ti_gs = [beta0_asy, beta0_sym]
         xi = 0.8  # Any value in [0,1] will do
         tau_max = 30
 

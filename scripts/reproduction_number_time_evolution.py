@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.model import (
+from bsp_epidemic_suppression_model.utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
 from bsp_epidemic_suppression_model.utilities.scenario import Scenario

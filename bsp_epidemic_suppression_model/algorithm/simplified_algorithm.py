@@ -1,15 +1,13 @@
 from dataclasses import dataclass
 from bsp_epidemic_suppression_model.utilities.functions_utils import round2
 from bsp_epidemic_suppression_model.utilities.distributions import gamma_cdf
-from bsp_epidemic_suppression_model.utilities.model import r0_alpha, r0_beta
+from bsp_epidemic_suppression_model.utilities.epidemic_data import alpha, beta
 
 
 def approximated_suppressed_R(
     R0: float, FTs_infty: float, FTc_infty: float, xi: float, ts: float
 ):
-    fraction_of_R0_before_isolation_for_symptoms = gamma_cdf(
-        ts, alpha=r0_alpha, beta=r0_beta
-    )
+    fraction_of_R0_before_isolation_for_symptoms = gamma_cdf(ts, alpha=alpha, beta=beta)
     symptoms_rescaling = fraction_of_R0_before_isolation_for_symptoms + (
         1 - fraction_of_R0_before_isolation_for_symptoms
     ) * (1 - xi * FTs_infty)

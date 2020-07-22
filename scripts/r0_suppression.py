@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.model import r0, FS
+from bsp_epidemic_suppression_model.utilities.epidemic_data import beta0, FS
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     suppressed_r_from_test_cdf,
 )
@@ -17,11 +17,13 @@ def r0_suppression_with_fixed_testing_time():
     FT = lambda tau: heaviside(tau - tau_s, 1)
     xi = 1.0  # Probability of (immediate) isolation given positive test
 
-    suppressed_r_0 = suppressed_r_from_test_cdf(r0, FT, xi)
+    suppressed_r_0 = suppressed_r_from_test_cdf(beta0, FT, xi)
     suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
 
     print("suppressed R_0 =", suppressed_R_0)
-    plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
+    plot_functions(
+        [beta0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step)
+    )
 
 
 def r0_suppression_due_to_symptoms_only():
@@ -31,11 +33,13 @@ def r0_suppression_due_to_symptoms_only():
     FT = lambda tau: ss * FS(tau - Deltat_test)
     xi = 1.0  # Probability of (immediate) isolation given positive test
 
-    suppressed_r_0 = suppressed_r_from_test_cdf(r0, FT, xi)
+    suppressed_r_0 = suppressed_r_from_test_cdf(beta0, FT, xi)
     suppressed_R_0 = integrate.quad(lambda tau: suppressed_r_0(tau), 0, tau_max)[0]
 
     print("suppressed R_0 =", suppressed_R_0)
-    plot_functions([r0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step))
+    plot_functions(
+        [beta0, suppressed_r_0], RealRange(x_min=0, x_max=tau_max, step=step)
+    )
 
 
 if __name__ == "__main__":
