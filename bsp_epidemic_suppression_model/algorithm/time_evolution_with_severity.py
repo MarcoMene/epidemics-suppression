@@ -81,7 +81,7 @@ def compute_time_evolution_with_severity(
 
         # Compute r, R components
 
-        r0_ti_gs = [lambda tau, g=g: scenario.r0_gs[g](t_i, tau) for g in gs]
+        r0_ti_gs = [lambda tau, g=g: scenario.beta0_gs[g](t_i, tau) for g in gs]
         (
             rapp_ti_gs,
             rnoapp_ti_gs,

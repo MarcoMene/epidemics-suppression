@@ -8,21 +8,21 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
 
 class ScenarioError(Exception):
     def __init__(self, *args: object) -> None:
-        super().__init__("""Scenario makes no sense""", *args)
+        super().__init__("""The scenario is not well-defined.""", *args)
 
 
 @dataclass
 class Scenario:
     """
-    Wraps a simulation scenario, completely described by a set of parameters.
-    For the meaning of parameters see the paper: <ref_paper>
+    Wraps a simulation scenario, defined by a set of parameters that describe the epidemic and the isolation measures.
+    For the meaning of the parameters see the paper: <ref_paper>.
     """
 
-    # Data from literature:
+    # Data from the literature:
     p_gs: List[float]  # Probabilities of having given severity
-    r0_gs: List[
+    beta0_gs: List[
         Callable[[float, float], float]
-    ]  # Reproduction number densities (t, tau) -> r^0_{t,g}(tau)
+    ]  # Infectiousness distributions (t, tau) -> \beta^0_{t,g}(tau)
 
     # Model parameters:
     t_0: float  # Absolute time at which isolation policies begin
@@ -46,22 +46,29 @@ class Scenario:
     p_DeltaATnoapp: ImproperProbabilityDensity
 
     def check(self):
+        """
+        Checks that all the lists referring to each severity component of the infected population have the same length.
+        """
         if (
             not len(self.ssapp)
             == len(self.ssnoapp)
             == len(self.p_gs)
-            == len(self.r0_gs)
+            == len(self.beta0_gs)
         ):
-            raise ScenarioError("The lists must have the same length")
+            raise ScenarioError("The lists must have the same length.")
 
         if sum(self.p_gs) != 1:
             raise ScenarioError(
-                "The fractions of infected with given severity must sum to 1"
+                "The fractions of people infected with given severity must sum to 1."
             )
 
     def __post_init__(self):
         self.check()
 
     @property
-    def n_severities(self):
+    def n_severities(self) -> int:
+        """
+        Returns the number of segments the infected population is divided into, each depending on the value of the
+        severity G.
+        """
         return len(self.ssapp)
