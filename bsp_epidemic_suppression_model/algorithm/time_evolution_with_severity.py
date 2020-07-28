@@ -23,19 +23,18 @@ def compute_time_evolution_with_severity(
     real_range: RealRange,
     n_iterations: int = 6,
     verbose: bool = True,
-):
-    # ### INTERNAL UTILS ###
+) -> List[StepData]:
+    """
+    Given a Scenario, computes n_iterations steps of the algorithm, filling each time a StepData object and
+    (if verbose=True) printing the relevant quantities computed.
+    :param scenario: the Scenario object defining the input data of the mode.
+    :param real_range: a RealRange object specifying the upper integration bound and the real numbers on which the
+    functions and densities are sampled from one step to the next.
+    :param n_iterations: the number of iterations.
+    :param verbose: if True, the relevant quantities computed at each step are printed.
+    :return: The list of StepData objects.
+    """
     tau_max = real_range.x_max
-
-    # def f_from_list(f_values: list, tau) -> float:
-    #     if tau < real_range.x_min:
-    #         return f_values[0]
-    #     if tau > real_range.x_max:
-    #         return f_values[-1]
-    #     i = int((tau - real_range.x_min) / real_range.step)
-    #     return f_values[i]
-
-    ### ITERATION
 
     step_data_list: List[StepData] = []
 
@@ -43,10 +42,6 @@ def compute_time_evolution_with_severity(
         gs = range(scenario.n_severities)  # Values of severity G
 
         # Compute FAs components
-        # FAsapp_ti_gs = [
-        #     lambda tau: scenario.ssapp[0] * FS(tau),
-        #     lambda tau: scenario.ssapp[1] * FS(tau),
-        # ]
         FAsapp_ti_gs = [lambda tau, g=g: scenario.ssapp[g] * FS(tau) for g in gs]
         FAsnoapp_ti_gs = [lambda tau, g=g: scenario.ssnoapp[g] * FS(tau) for g in gs]
 
