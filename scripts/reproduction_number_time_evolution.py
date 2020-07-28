@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     scenario = Scenario(
         p_gs=p_gs,
-        r0_gs=r0_gs,
+        beta0_gs=r0_gs,
         t_0=0,
         ssapp=[0, 0.2],
         ssnoapp=[0, 0.2],

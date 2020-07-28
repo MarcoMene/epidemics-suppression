@@ -1,7 +1,7 @@
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_FA_from_FAs_and_previous_step_data,
     compute_FT_from_FA_and_DeltaAT,
-    compute_r_R_components_from_FT,
+    compute_beta_and_R_components_from_FT,
 )
 
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
@@ -38,10 +38,10 @@ class TestAlgorithmBlock:
             rnoapp_ti_gs,
             Rapp_ti_gs,
             Rnoapp_ti_gs,
-        ) = compute_r_R_components_from_FT(
+        ) = compute_beta_and_R_components_from_FT(
             FTapp_ti_gs=FTapp_ti_gs,
             FTnoapp_ti_gs=FTnoapp_ti_gs,
-            r0_ti_gs=r0_ti_gs,
+            beta0_ti_gs=r0_ti_gs,
             xi=xi,
             tau_max=tau_max,
         )

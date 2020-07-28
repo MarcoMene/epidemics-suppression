@@ -13,10 +13,9 @@ from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_FA_from_FAs_and_previous_step_data,
     compute_FT_from_FA_and_DeltaAT,
-    compute_r_R_components_from_FT,
+    compute_beta_and_R_components_from_FT,
 )
 from bsp_epidemic_suppression_model.algorithm.step_data import StepData
-
 
 
 def compute_time_evolution_with_severity(
@@ -76,31 +75,32 @@ def compute_time_evolution_with_severity(
             FAnoapp_ti_gs=FAnoapp_ti_gs,
             p_DeltaATapp=scenario.p_DeltaATapp,
             p_DeltaATnoapp=scenario.p_DeltaATnoapp,
-            real_range=real_range,
         )
 
         # Compute r, R components
 
-        r0_ti_gs = [lambda tau, g=g: scenario.beta0_gs[g](t_i, tau) for g in gs]
+        beta0_ti_gs = [lambda tau, g=g: scenario.beta0_gs[g](t_i, tau) for g in gs]
         (
             rapp_ti_gs,
             rnoapp_ti_gs,
             Rapp_ti_gs,
             Rnoapp_ti_gs,
-        ) = compute_r_R_components_from_FT(
+        ) = compute_beta_and_R_components_from_FT(
             FTapp_ti_gs=FTapp_ti_gs,
             FTnoapp_ti_gs=FTnoapp_ti_gs,
-            r0_ti_gs=r0_ti_gs,
+            beta0_ti_gs=beta0_ti_gs,
             xi=scenario.xi,
             tau_max=tau_max,
         )
 
-        # Compute aggregate r (needed for EtauC), and R
-        rapp_ti = lambda tau: sum(scenario.p_gs[g] * rapp_ti_gs[g](tau) for g in gs)
-        rnoapp_ti = lambda tau: sum(scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs)
-        r_ti = lambda tau: scenario.papp(t_i) * rapp_ti(tau) + (
+        # Compute aggregate beta (needed for EtauC), and R
+        betaapp_ti = lambda tau: sum(scenario.p_gs[g] * rapp_ti_gs[g](tau) for g in gs)
+        betanoapp_ti = lambda tau: sum(
+            scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs
+        )
+        r_ti = lambda tau: scenario.papp(t_i) * betaapp_ti(tau) + (
             1 - scenario.papp(t_i)
-        ) * rnoapp_ti(tau)
+        ) * betanoapp_ti(tau)
 
         Rapp_ti = sum(scenario.p_gs[g] * Rapp_ti_gs[g] for g in gs)
         Rnoapp_ti = sum(scenario.p_gs[g] * Rnoapp_ti_gs[g] for g in gs)
