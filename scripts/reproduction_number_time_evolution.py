@@ -9,8 +9,8 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
 from bsp_epidemic_suppression_model.model_utilities.plot_results import (
     plot_time_evolution,
 )
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    compute_time_evolution_with_severity,
+from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
+    compute_time_evolution,
 )
 
 import warnings
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         p_DeltaATnoapp=DeltaMeasure(position=4),
     )
 
-    step_data_list = compute_time_evolution_with_severity(
+    step_data_list = compute_time_evolution(
         scenario=scenario,
         real_range=RealRange(0, tau_max, integration_step),
         n_iterations=8,

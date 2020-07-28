@@ -7,8 +7,8 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     RealRange,
 )
 from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    compute_time_evolution_with_severity,
+from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
+    compute_time_evolution,
 )
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import round2
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     tau_max = 30
     integration_step = 0.1
 
-    p_gs, r0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+    p_gs, beta0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
 
     sSs = [0.2, 0.5, 0.8]
     sCs = [0.5, 0.8]
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
                     scenario = Scenario(
                         p_gs=p_gs,
-                        r0_gs=r0_gs,
+                        beta0_gs=beta0_gs,
                         t_0=0,
                         ssapp=[0, sS],
                         ssnoapp=[0, 0.2],
@@ -48,7 +48,7 @@ if __name__ == "__main__":
                         p_DeltaATnoapp=DeltaMeasure(position=4),
                     )
 
-                    step_data_list = compute_time_evolution_with_severity(
+                    step_data_list = compute_time_evolution(
                         scenario=scenario,
                         real_range=RealRange(0, tau_max, integration_step),
                         n_iterations=8,

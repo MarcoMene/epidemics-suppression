@@ -18,7 +18,7 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
 from bsp_epidemic_suppression_model.algorithm.step_data import StepData
 
 
-def compute_time_evolution_with_severity(
+def compute_time_evolution(
     scenario: Scenario,
     real_range: RealRange,
     n_iterations: int = 6,

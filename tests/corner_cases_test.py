@@ -8,8 +8,8 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
 )
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    compute_time_evolution_with_severity,
+from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
+    compute_time_evolution,
 )
 
 
@@ -36,7 +36,7 @@ class TestCornerCases:
             p_DeltaATnoapp=DeltaMeasure(position=2),
         )
 
-        step_data_list = compute_time_evolution_with_severity(
+        step_data_list = compute_time_evolution(
             scenario=scenario,
             real_range=RealRange(0, tau_max, integration_step),
             n_iterations=4,
@@ -79,7 +79,7 @@ class TestCornerCases:
             p_DeltaATnoapp=DeltaMeasure(position=2),
         )
 
-        step_data_list = compute_time_evolution_with_severity(
+        step_data_list = compute_time_evolution(
             scenario=scenario,
             real_range=RealRange(0, tau_max, integration_step),
             n_iterations=4,
