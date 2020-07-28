@@ -58,8 +58,10 @@ def beta0_sym(tau: float):
 def make_scenario_parameters_for_asymptomatics_symptomatics_model() -> Tuple[
     List[float], List[Callable[[float, float], float]]
 ]:
-    """Returns the lists p_gs and beta0_gs for the "two-components model" for the severity, namely for asymptomatic and
-    symptomatic individuals."""
+    """
+    Returns the lists p_gs and beta0_gs for the "two-components model" for the severity, namely for asymptomatic and
+    symptomatic individuals.
+    """
     p_gs = [1 - p_sym, p_sym]
     beta0_gs = [lambda t, tau: beta0_asy(tau), lambda t, tau: beta0_sym(tau)]
 
