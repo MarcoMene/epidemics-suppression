@@ -17,41 +17,52 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-if __name__ == "__main__":
-    # gs = [asymptomatic, symptomatic]
+def time_evolution_with_varying_parameters():
+    """
+    Run the algorithm several time, each with a different choice of the parameters s^S, s^C, xi, and p^app.
+    """
+
     tau_max = 30
     integration_step = 0.1
 
+    n_iterations = 8
+
+    # gs = [asymptomatic, symptomatic]
     p_gs, beta0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
 
-    sSs = [0.2, 0.5, 0.8]
-    sCs = [0.5, 0.8]
-    xis = [0.7, 0.9]
-    papps = [0.2, 0.5, 0.7, 0.9]
+    ssnoapp = 0.2
+    scnoapp = 0.2
+    DeltaATapp = 2
+    DeltaATnoapp = 4
 
-    for sS in sSs:
-        for sC in sCs:
-            for xi in xis:
-                for papp in papps:
+    # Varying parameters
+    sSapp_list = [0.2, 0.5, 0.8]
+    sCapp_list = [0.5, 0.8]
+    xi_list = [0.7, 0.9]
+    papp_list = [0.2, 0.5, 0.7, 0.9]
 
+    for sSapp in sSapp_list:
+        for sCapp in sCapp_list:
+            for xi in xi_list:
+                for papp in papp_list:
                     scenario = Scenario(
                         p_gs=p_gs,
                         beta0_gs=beta0_gs,
                         t_0=0,
-                        ssapp=[0, sS],
-                        ssnoapp=[0, 0.2],
-                        scapp=sC,
-                        scnoapp=0.2,
+                        ssapp=[0, sSapp],
+                        ssnoapp=[0, ssnoapp],
+                        scapp=sCapp,
+                        scnoapp=scnoapp,
                         xi=xi,
                         papp=lambda tau: papp,
-                        p_DeltaATapp=DeltaMeasure(position=2),
-                        p_DeltaATnoapp=DeltaMeasure(position=4),
+                        p_DeltaATapp=DeltaMeasure(position=DeltaATapp),
+                        p_DeltaATnoapp=DeltaMeasure(position=DeltaATnoapp),
                     )
 
                     step_data_list = compute_time_evolution(
                         scenario=scenario,
                         real_range=RealRange(0, tau_max, integration_step),
-                        n_iterations=8,
+                        n_iterations=n_iterations,
                         verbose=False,
                     )
 
@@ -59,5 +70,9 @@ if __name__ == "__main__":
                     eff = effectiveness_from_R(R_last)
 
                     print(
-                        f" {sS} & {sC} & {xi} & {papp} & {round2(R_last)} & {round2(eff)} \\\ "
+                        f" {sSapp} & {sCapp} & {xi} & {papp} & {round2(R_last)} & {round2(eff)} \\\ "
                     )
+
+
+if __name__ == "__main__":
+    time_evolution_with_varying_parameters()
