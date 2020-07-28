@@ -77,7 +77,7 @@ def compute_time_evolution_with_severity(
             p_DeltaATnoapp=scenario.p_DeltaATnoapp,
         )
 
-        # Compute r, R components
+        # Compute beta, R components
 
         beta0_ti_gs = [lambda tau, g=g: scenario.beta0_gs[g](t_i, tau) for g in gs]
         (
@@ -98,7 +98,7 @@ def compute_time_evolution_with_severity(
         betanoapp_ti = lambda tau: sum(
             scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs
         )
-        r_ti = lambda tau: scenario.papp(t_i) * betaapp_ti(tau) + (
+        beta_ti = lambda tau: scenario.papp(t_i) * betaapp_ti(tau) + (
             1 - scenario.papp(t_i)
         ) * betanoapp_ti(tau)
 
@@ -112,7 +112,7 @@ def compute_time_evolution_with_severity(
         R_ti = scenario.papp(t_i) * Rapp_ti + (1 - scenario.papp(t_i)) * Rnoapp_ti
 
         # Compute source-based probabilities and distributions
-        EtauC_ti = integrate(f=lambda tau: tau * r_ti(tau) / R_ti, a=0, b=tau_max)
+        EtauC_ti = integrate(f=lambda tau: tau * beta_ti(tau) / R_ti, a=0, b=tau_max)
         tildepapp_ti = scenario.papp(t_i) * Rapp_ti / R_ti
         tildep_ti_gs = [scenario.p_gs[g] * R_ti_gs[g] / R_ti for g in gs]
         tildeFTapp_ti = lambda tau: sum(
