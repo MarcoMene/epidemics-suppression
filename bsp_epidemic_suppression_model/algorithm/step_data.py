@@ -13,6 +13,7 @@ class StepData:
     Class containing all the data produced at each step of the algorithm.
     Some of these data are functions, but are stored in this class as lists of values.
     """
+
     def __init__(
         self,
         real_range: RealRange,
