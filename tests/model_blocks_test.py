@@ -92,7 +92,6 @@ class TestAlgorithmBlock:
             FAnoapp_ti_gs=FAnoapp_ti_gs,
             p_DeltaATapp=p_DeltaATapp,
             p_DeltaATnoapp=p_DeltaATnoapp,
-            real_range=real_range,
         )
 
         # Check that each FT component is the translation of the respective FA component
