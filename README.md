@@ -16,12 +16,12 @@ cd epidemics-suppression
 pipenv install
 ```
 
-# Main scripts
+# Examples
 
 Given a set of initial parameters, **computes the time evolution of the suppression** induced over R by isolation measures.
 
 ```
-scripts/reproduction_number_time_evolution.py
+examples/reproduction_number_time_evolution.py
 ```
 
 ## how to cite
