@@ -1,3 +1,7 @@
+"""
+Contains a function that runs the algorithm several times, each with a different choice of the input parameters.
+"""
+
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
@@ -19,7 +23,7 @@ warnings.filterwarnings("ignore")
 
 def time_evolution_with_varying_parameters():
     """
-    Run the algorithm several time, each with a different choice of the parameters s^S, s^C, xi, and p^app.
+    Run the algorithm several times, each with a different choice of the parameters s^S, s^C, xi, and p^app.
     """
 
     tau_max = 30

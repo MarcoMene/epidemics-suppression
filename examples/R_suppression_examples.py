@@ -1,3 +1,8 @@
+"""
+Some examples of computations of the suppressed effective reproduction number, given the distribution of the time of
+positive testing for an infected individual.
+"""
+
 import scipy.integrate as integrate
 from numpy import heaviside
 

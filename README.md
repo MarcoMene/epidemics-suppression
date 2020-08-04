@@ -33,7 +33,7 @@ The folder `examples` contains some functions that, when executed, run the algor
 
 3. `examples/time_evolution_examples.py` contains some examples running the complete algorithm in certain scenarios, and plotting the results.
 
-4. `examples/reproduction_number_time_evolution_span_parameters.py` contains a function that runs the algorithm several time, each with a different choice of the input parameters.
+4. `examples/reproduction_number_time_evolution_span_parameters.py` contains a function that runs the algorithm several times, each with a different choice of the input parameters.
 
 ## How to cite
 
