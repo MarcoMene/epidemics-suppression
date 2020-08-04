@@ -1,89 +1,40 @@
 from typing import List
 
-from bsp_epidemic_suppression_model.algorithm.model_blocks import (
-    compute_FA_from_FAs_and_previous_step_data,
-    compute_FT_from_FA_and_DeltaAT,
-    compute_r_R_components_from_FT,
-)
-from bsp_epidemic_suppression_model.utilities.model import FS
-from bsp_epidemic_suppression_model.utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     RealRange,
-    list_from_f,
-    f_from_list,
     round2,
     round2_list,
-    ImproperProbabilityCumulativeFunction,
     integrate,
 )
 
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import FS
+from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
 
-class StepData:
-    def __init__(
-        self,
-        real_range: RealRange,
-        t: float,  # Absolute time of this step
-        papp: float,  # Probability that an infected at t has the app
-        tildepapp: float,  # Probability that a source infected at t has the app
-        tildepgs: List[
-            float
-        ],  # Probabilities that a source infected at t has each severity
-        EtauC: float,  # Expected contagion time for source infected at t
-        FT_infty: float,  # Probability that an infected at t tests positive
-        FTapp_infty: float,  # Probability that an infected at t with the app tests positive
-        FTnoapp_infty: float,  # Probability that an infected at t without the app tests positive
-        tildeFTapp: ImproperProbabilityCumulativeFunction,
-        # Distribution of testing time for source infected at t with app
-        tildeFTnoapp: ImproperProbabilityCumulativeFunction,
-        # Distribution of testing time for source infected at t with no app
-        R: float,
-        Rapp: float,
-        Rnoapp: float,
-    ):
-        self.real_range = real_range
-        self.t = t
-        self.papp = papp
-        self.tildepapp = tildepapp
-        self.tildepgs = tildepgs
-        self.EtauC = EtauC
-        self.FT_infty = FT_infty
-        self.FTapp_infty = FTapp_infty
-        self.FTnoapp_infty = FTnoapp_infty
-        self.tildeFTapp_values = list_from_f(f=tildeFTapp, real_range=real_range)
-        self.tildeFTnoapp_values = list_from_f(f=tildeFTnoapp, real_range=real_range)
-        self.R = R
-        self.Rapp = Rapp
-        self.Rnoapp = Rnoapp
-
-    def tildeFTapp(self, tau):
-        return f_from_list(f_values=self.tildeFTapp_values, real_range=self.real_range)(
-            tau
-        )
-
-    def tildeFTnoapp(self, tau):
-        return f_from_list(
-            f_values=self.tildeFTnoapp_values, real_range=self.real_range
-        )(tau)
+from bsp_epidemic_suppression_model.algorithm.model_blocks import (
+    compute_FA_from_FAs_and_previous_step_data,
+    compute_FT_from_FA_and_DeltaAT,
+    compute_beta_and_R_components_from_FT,
+)
+from bsp_epidemic_suppression_model.algorithm.step_data import StepData
 
 
-def compute_time_evolution_with_severity(
+def compute_time_evolution(
     scenario: Scenario,
     real_range: RealRange,
     n_iterations: int = 6,
     verbose: bool = True,
-):
-    # ### INTERNAL UTILS ###
+) -> List[StepData]:
+    """
+    Given a Scenario, computes n_iterations steps of the algorithm, filling each time a StepData object and
+    (if verbose=True) printing the relevant quantities computed.
+    :param scenario: the Scenario object defining the input data of the mode.
+    :param real_range: a RealRange object specifying the upper integration bound and the real numbers on which the
+    functions and densities are sampled from one step to the next.
+    :param n_iterations: the number of iterations.
+    :param verbose: if True, the relevant quantities computed at each step are printed.
+    :return: The list of StepData objects.
+    """
     tau_max = real_range.x_max
-
-    # def f_from_list(f_values: list, tau) -> float:
-    #     if tau < real_range.x_min:
-    #         return f_values[0]
-    #     if tau > real_range.x_max:
-    #         return f_values[-1]
-    #     i = int((tau - real_range.x_min) / real_range.step)
-    #     return f_values[i]
-
-    ### ITERATION
 
     step_data_list: List[StepData] = []
 
@@ -91,10 +42,6 @@ def compute_time_evolution_with_severity(
         gs = range(scenario.n_severities)  # Values of severity G
 
         # Compute FAs components
-        # FAsapp_ti_gs = [
-        #     lambda tau: scenario.ssapp[0] * FS(tau),
-        #     lambda tau: scenario.ssapp[1] * FS(tau),
-        # ]
         FAsapp_ti_gs = [lambda tau, g=g: scenario.ssapp[g] * FS(tau) for g in gs]
         FAsnoapp_ti_gs = [lambda tau, g=g: scenario.ssnoapp[g] * FS(tau) for g in gs]
 
@@ -123,31 +70,32 @@ def compute_time_evolution_with_severity(
             FAnoapp_ti_gs=FAnoapp_ti_gs,
             p_DeltaATapp=scenario.p_DeltaATapp,
             p_DeltaATnoapp=scenario.p_DeltaATnoapp,
-            real_range=real_range,
         )
 
-        # Compute r, R components
+        # Compute beta, R components
 
-        r0_ti_gs = [lambda tau, g=g: scenario.r0_gs[g](t_i, tau) for g in gs]
+        beta0_ti_gs = [lambda tau, g=g: scenario.beta0_gs[g](t_i, tau) for g in gs]
         (
             rapp_ti_gs,
             rnoapp_ti_gs,
             Rapp_ti_gs,
             Rnoapp_ti_gs,
-        ) = compute_r_R_components_from_FT(
+        ) = compute_beta_and_R_components_from_FT(
             FTapp_ti_gs=FTapp_ti_gs,
             FTnoapp_ti_gs=FTnoapp_ti_gs,
-            r0_ti_gs=r0_ti_gs,
+            beta0_ti_gs=beta0_ti_gs,
             xi=scenario.xi,
             tau_max=tau_max,
         )
 
-        # Compute aggregate r (needed for EtauC), and R
-        rapp_ti = lambda tau: sum(scenario.p_gs[g] * rapp_ti_gs[g](tau) for g in gs)
-        rnoapp_ti = lambda tau: sum(scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs)
-        r_ti = lambda tau: scenario.papp(t_i) * rapp_ti(tau) + (
+        # Compute aggregate beta (needed for EtauC), and R
+        betaapp_ti = lambda tau: sum(scenario.p_gs[g] * rapp_ti_gs[g](tau) for g in gs)
+        betanoapp_ti = lambda tau: sum(
+            scenario.p_gs[g] * rnoapp_ti_gs[g](tau) for g in gs
+        )
+        beta_ti = lambda tau: scenario.papp(t_i) * betaapp_ti(tau) + (
             1 - scenario.papp(t_i)
-        ) * rnoapp_ti(tau)
+        ) * betanoapp_ti(tau)
 
         Rapp_ti = sum(scenario.p_gs[g] * Rapp_ti_gs[g] for g in gs)
         Rnoapp_ti = sum(scenario.p_gs[g] * Rnoapp_ti_gs[g] for g in gs)
@@ -159,7 +107,7 @@ def compute_time_evolution_with_severity(
         R_ti = scenario.papp(t_i) * Rapp_ti + (1 - scenario.papp(t_i)) * Rnoapp_ti
 
         # Compute source-based probabilities and distributions
-        EtauC_ti = integrate(f=lambda tau: tau * r_ti(tau) / R_ti, a=0, b=tau_max)
+        EtauC_ti = integrate(f=lambda tau: tau * beta_ti(tau) / R_ti, a=0, b=tau_max)
         tildepapp_ti = scenario.papp(t_i) * Rapp_ti / R_ti
         tildep_ti_gs = [scenario.p_gs[g] * R_ti_gs[g] / R_ti for g in gs]
         tildeFTapp_ti = lambda tau: sum(

@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     RealRange,
     list_from_f,
     f_from_list,

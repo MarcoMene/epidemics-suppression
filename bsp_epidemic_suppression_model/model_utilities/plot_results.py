@@ -1,37 +1,11 @@
-from typing import List, Optional
+from typing import List
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import RealRange
-
-from bsp_epidemic_suppression_model.utilities.model import R0
-
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    StepData,
-)
-
-from bsp_epidemic_suppression_model.utilities.functions_utils import round2
-from bsp_epidemic_suppression_model.utilities.model import effectiveness_from_R
-
-
-def plot_functions(
-    fs: list,
-    real_range: RealRange,
-    labels: Optional[List[str]] = None,
-    title: Optional[str] = None,
-):
-    """
-    Util to plot a list of functions in a range, with a step.
-    """
-    if labels is None:
-        labels = [str(i) for i in range(len(fs))]
-    for i, f in enumerate(fs):
-        plt.plot(
-            real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i]
-        )
-    plt.legend()
-    plt.title(title)
-    plt.show()
+from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
+from bsp_epidemic_suppression_model.algorithm.step_data import StepData
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import round2
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import R0
 
 
 def plot_time_evolution(step_data_list: List[StepData]):
@@ -39,7 +13,6 @@ def plot_time_evolution(step_data_list: List[StepData]):
     Plots time evolution of epidemics-suppression: effective reproduction numbers and other KPIs.
     """
     fig = plt.figure(figsize=(10, 15))
-    # fig.suptitle(f"{scenario}")
 
     t_max = step_data_list[-1].t
 
@@ -73,33 +46,6 @@ def plot_time_evolution(step_data_list: List[StepData]):
         label=f"R no app -> {round2(Rnoapp_last)}, Eff. {round2(effectiveness_from_R(Rnoapp_last))}",
     ),
     R_tplot.legend()
-
-    # # Effectiveness
-    # E_tplot = fig.add_subplot(211)
-    # E_tplot.set_xlabel("t [days]")
-    # E_tplot.set_ylabel("E_t")
-    # E_tplot.grid(True)
-    # E_tplot.set_xlim(0, t_max)
-    # E_tplot.set_ylim(0, 1)
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.R_t) for step_data in step_data_list],
-    #     color="black",
-    #     label="R - Eff",
-    # ),
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.Rapp_t) for step_data in step_data_list],
-    #     color="green",
-    #     label="R app - Eff",
-    # ),
-    # E_tplot.plot(
-    #     [step_data.t for step_data in step_data_list],
-    #     [effectiveness_from_R(R=step_data.Rnoapp_t) for step_data in step_data_list],
-    #     color="blue",
-    #     label="R no app - Eff",
-    # ),
-    # E_tplot.legend()
 
     # Other metrics
     Pplot = fig.add_subplot(212)

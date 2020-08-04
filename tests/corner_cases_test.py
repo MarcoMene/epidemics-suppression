@@ -1,15 +1,15 @@
-from bsp_epidemic_suppression_model.utilities.model import (
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
     R0,
-    r0,
+    beta0,
     make_scenario_parameters_for_asymptomatics_symptomatics_model,
 )
-from bsp_epidemic_suppression_model.utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
 )
-from bsp_epidemic_suppression_model.algorithm.time_evolution_with_severity import (
-    compute_time_evolution_with_severity,
+from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
+    compute_time_evolution,
 )
 
 
@@ -24,7 +24,7 @@ class TestCornerCases:
 
         scenario = Scenario(
             p_gs=[1],
-            r0_gs=[lambda t, tau: r0(tau)],
+            beta0_gs=[lambda t, tau: beta0(tau)],
             t_0=0,
             ssapp=[0],
             ssnoapp=[0],
@@ -36,7 +36,7 @@ class TestCornerCases:
             p_DeltaATnoapp=DeltaMeasure(position=2),
         )
 
-        step_data_list = compute_time_evolution_with_severity(
+        step_data_list = compute_time_evolution(
             scenario=scenario,
             real_range=RealRange(0, tau_max, integration_step),
             n_iterations=4,
@@ -63,11 +63,11 @@ class TestCornerCases:
         integration_step = 0.1
 
         # gs = [asymptomatic, symptomatic]:
-        p_gs, r0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
 
         scenario = Scenario(
             p_gs=p_gs,
-            r0_gs=r0_gs,
+            beta0_gs=beta0_gs,
             t_0=0,
             ssapp=[0, 0.7],
             ssnoapp=[0, 0.5],
@@ -79,7 +79,7 @@ class TestCornerCases:
             p_DeltaATnoapp=DeltaMeasure(position=2),
         )
 
-        step_data_list = compute_time_evolution_with_severity(
+        step_data_list = compute_time_evolution(
             scenario=scenario,
             real_range=RealRange(0, tau_max, integration_step),
             n_iterations=4,

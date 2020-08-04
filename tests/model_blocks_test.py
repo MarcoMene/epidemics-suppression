@@ -1,12 +1,15 @@
 from bsp_epidemic_suppression_model.algorithm.model_blocks import (
     compute_FA_from_FAs_and_previous_step_data,
     compute_FT_from_FA_and_DeltaAT,
-    compute_r_R_components_from_FT,
+    compute_beta_and_R_components_from_FT,
 )
 
-from bsp_epidemic_suppression_model.utilities.model import r0sy, r0asy
+from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+    beta0_sym,
+    beta0_asy,
+)
 
-from bsp_epidemic_suppression_model.utilities.functions_utils import (
+from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
     integrate,
@@ -17,7 +20,7 @@ class TestAlgorithmBlock:
     """Tests each block of the algorithm separately"""
 
     def test_R_suppression(self):
-        r0_ti_gs = [r0asy, r0sy]
+        r0_ti_gs = [beta0_asy, beta0_sym]
         xi = 0.8  # Any value in [0,1] will do
         tau_max = 30
 
@@ -35,10 +38,10 @@ class TestAlgorithmBlock:
             rnoapp_ti_gs,
             Rapp_ti_gs,
             Rnoapp_ti_gs,
-        ) = compute_r_R_components_from_FT(
+        ) = compute_beta_and_R_components_from_FT(
             FTapp_ti_gs=FTapp_ti_gs,
             FTnoapp_ti_gs=FTnoapp_ti_gs,
-            r0_ti_gs=r0_ti_gs,
+            beta0_ti_gs=r0_ti_gs,
             xi=xi,
             tau_max=tau_max,
         )
@@ -89,7 +92,6 @@ class TestAlgorithmBlock:
             FAnoapp_ti_gs=FAnoapp_ti_gs,
             p_DeltaATapp=p_DeltaATapp,
             p_DeltaATnoapp=p_DeltaATnoapp,
-            real_range=real_range,
         )
 
         # Check that each FT component is the translation of the respective FA component
