@@ -8,18 +8,21 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import RealRa
 def plot_functions(
     fs: list,
     real_range: RealRange,
-    labels: Optional[List[str]] = None,
+    custom_labels: Optional[List[str]] = None,
     title: Optional[str] = None,
 ):
     """
-    Util to plot a list of functions in a range, with a step.
+    Util to plot a list of functions with given range and step.
     """
-    if labels is None:
+    if custom_labels is None:
         labels = [str(i) for i in range(len(fs))]
+    else:
+        labels = custom_labels
     for i, f in enumerate(fs):
         plt.plot(
             real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i]
         )
-    plt.legend()
+    if len(fs) > 1 or custom_labels is not None:
+        plt.legend()
     plt.title(title)
     plt.show()
