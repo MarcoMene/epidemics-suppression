@@ -5,7 +5,7 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
     rho0,
-R0
+    R0,
 )
 from bsp_epidemic_suppression_model.model_utilities.scenario import (
     make_homogeneous_scenario,
@@ -13,7 +13,7 @@ from bsp_epidemic_suppression_model.model_utilities.scenario import (
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     DeltaMeasure,
     RealRange,
-integrate,
+    integrate,
 )
 
 from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
@@ -90,11 +90,13 @@ def dependency_on_share_of_symptomatics_homogeneous_model_example():
             -4.993 * p_sym
         )  # Random choice, gives 0.95 when p_sym = 0.6
         R0_sym = contribution_of_symptomatics_to_R0 / p_sym * R0
-        R0_asy = (1 - contribution_of_symptomatics_to_R0) / (1-p_sym) * R0
-
+        R0_asy = (1 - contribution_of_symptomatics_to_R0) / (1 - p_sym) * R0
 
         # gs = [asymptomatic, symptomatic]
-        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model(p_sym=p_sym, contribution_of_symptomatics_to_R0=contribution_of_symptomatics_to_R0)
+        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model(
+            p_sym=p_sym,
+            contribution_of_symptomatics_to_R0=contribution_of_symptomatics_to_R0,
+        )
         n_iterations = 6
 
         scenario = make_homogeneous_scenario(
@@ -141,17 +143,20 @@ def dependency_on_infectiousness_width_homogeneous_model_example():
     for f in infectiousness_rescale_factors:
 
         def rescaled_rho0(tau):
-            return (1/f) * rho0(tau/f)
+            return (1 / f) * rho0(tau / f)
 
         assert round(integrate(rescaled_rho0, 0, tau_max), 5) == 1
 
-        EtauC0 = integrate(lambda tau: tau * rescaled_rho0(tau), 0, tau_max)  # Expected default generation time
+        EtauC0 = integrate(
+            lambda tau: tau * rescaled_rho0(tau), 0, tau_max
+        )  # Expected default generation time
         expected_default_generation_times_list.append(EtauC0)
 
         # gs = [asymptomatic, symptomatic]
-        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model(rho0=rescaled_rho0)
+        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model(
+            rho0=rescaled_rho0
+        )
         n_iterations = 6
-
 
         scenario = make_homogeneous_scenario(
             p_gs=p_gs,
@@ -175,10 +180,11 @@ def dependency_on_infectiousness_width_homogeneous_model_example():
 
         Effinfty_values_list.append(Effinfty)
 
-
     plt.ylim(0, 0.8)
     plt.grid(True)
-    plt.plot(expected_default_generation_times_list, Effinfty_values_list, color="black", ),
+    plt.plot(
+        expected_default_generation_times_list, Effinfty_values_list, color="black",
+    ),
     plt.xlabel("E(τ^C)")
     plt.ylabel("Eff_∞")
     plt.title("Effectiveness under rescaling of the generation time τ^C distribution")

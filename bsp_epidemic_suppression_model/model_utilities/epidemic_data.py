@@ -89,6 +89,3 @@ def make_scenario_parameters_for_asymptomatic_symptomatic_model(
     beta0_gs = [lambda t, tau: beta0_asy(tau), lambda t, tau: beta0_sym(tau)]
 
     return p_gs, beta0_gs
-
-
-
