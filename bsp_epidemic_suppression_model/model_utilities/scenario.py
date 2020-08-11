@@ -3,6 +3,7 @@ from typing import List, Callable
 
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
     ImproperProbabilityDensity,
+    DeltaMeasure,
 )
 
 
@@ -72,3 +73,33 @@ class Scenario:
         severity G.
         """
         return len(self.ssapp)
+
+
+def make_homogeneous_scenario(
+    p_gs: List[float],
+    beta0_gs: List[Callable[[float, float], float]],
+    t_0: float,
+    ss: List[float],
+    sc: float,
+    xi: float,
+    p_DeltaAT: ImproperProbabilityDensity,
+) -> Scenario:
+    """
+    Function that returns a Scenario object describing a homogeneous scenario, where there is no distinction between
+    people using an app or not (in practice, we are assuming no one uses the app: the input parameters are assigned to
+    the "no_app" variables).
+    """
+    scenario = Scenario(
+        p_gs=p_gs,
+        beta0_gs=beta0_gs,
+        t_0=t_0,
+        ssapp=[0, 0],
+        ssnoapp=ss,
+        scapp=0,
+        scnoapp=sc,
+        xi=xi,
+        papp=lambda tau: 0,
+        p_DeltaATapp=DeltaMeasure(position=0),
+        p_DeltaATnoapp=p_DeltaAT,
+    )
+    return scenario
