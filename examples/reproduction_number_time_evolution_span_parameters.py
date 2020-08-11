@@ -3,7 +3,7 @@ Contains a function that runs the algorithm several times, each with a different
 """
 
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
-    make_scenario_parameters_for_asymptomatics_symptomatics_model,
+    make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
 from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
@@ -32,7 +32,7 @@ def time_evolution_with_varying_parameters():
     n_iterations = 8
 
     # gs = [asymptomatic, symptomatic]
-    p_gs, beta0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+    p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
     ssnoapp = 0.2
     scnoapp = 0.2

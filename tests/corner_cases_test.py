@@ -1,7 +1,7 @@
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
     R0,
     beta0,
-    make_scenario_parameters_for_asymptomatics_symptomatics_model,
+    make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
 from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
@@ -63,7 +63,7 @@ class TestCornerCases:
         integration_step = 0.1
 
         # gs = [asymptomatic, symptomatic]:
-        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatics_symptomatics_model()
+        p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
         scenario = Scenario(
             p_gs=p_gs,
