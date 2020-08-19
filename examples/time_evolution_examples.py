@@ -178,10 +178,3 @@ def time_evolution_gradual_app_adoption_example():
     )
 
     plot_time_evolution(step_data_list=step_data_list)
-
-
-if __name__ == "__main__":
-    # time_evolution_optimistic_scenario_example()
-    # time_evolution_pessimistic_scenario_example()
-    # time_evolution_homogeneous_model_optimistic_scenario_example()
-    time_evolution_gradual_app_adoption_example()
