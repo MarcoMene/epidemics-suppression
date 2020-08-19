@@ -40,22 +40,22 @@ def time_evolution_with_varying_parameters():
     DeltaATnoapp = 4
 
     # Varying parameters
-    sSapp_list = [0.2, 0.5, 0.8]
-    sCapp_list = [0.5, 0.8]
+    ssapp_list = [0.2, 0.5, 0.8]
+    scapp_list = [0.5, 0.8]
     xi_list = [0.7, 0.9]
     papp_list = [0.2, 0.5, 0.7, 0.9]
 
-    for sSapp in sSapp_list:
-        for sCapp in sCapp_list:
+    for ssapp in ssapp_list:
+        for scapp in scapp_list:
             for xi in xi_list:
                 for papp in papp_list:
                     scenario = Scenario(
                         p_gs=p_gs,
                         beta0_gs=beta0_gs,
                         t_0=0,
-                        ssapp=[0, sSapp],
+                        ssapp=[0, ssapp],
                         ssnoapp=[0, ssnoapp],
-                        scapp=sCapp,
+                        scapp=scapp,
                         scnoapp=scnoapp,
                         xi=xi,
                         papp=lambda tau: papp,
@@ -70,13 +70,9 @@ def time_evolution_with_varying_parameters():
                         verbose=False,
                     )
 
-                    R_last = step_data_list[-1].R
-                    eff = effectiveness_from_R(R_last)
+                    Rinfty = step_data_list[-1].R
+                    Effinfty = effectiveness_from_R(Rinfty)
 
                     print(
-                        f" {sSapp} & {sCapp} & {xi} & {papp} & {round2(R_last)} & {round2(eff)} \\\ "
+                        f" {ssapp} & {scapp} & {xi} & {papp} & {round2(Rinfty)} & {round2(Effinfty)} \\\ "
                     )
-
-
-if __name__ == "__main__":
-    time_evolution_with_varying_parameters()
