@@ -75,7 +75,7 @@ def make_scenario_parameters_for_asymptomatic_symptomatic_model(
         contribution_of_symptomatics_to_R0 / p_sym * R0 if p_sym > 0 else 0
     )
 
-    assert R0 == p_sym * R0_sym + p_asy * R0_asy
+    assert round(R0 - p_sym * R0_sym - p_asy * R0_asy, 7) == 0
 
     def beta0_asy(tau: float):
         """Default infectiousness for asymptomatic individuals."""
