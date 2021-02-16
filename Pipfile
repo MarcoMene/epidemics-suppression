@@ -13,7 +13,6 @@ epidemic-suppression-model-lib-python = {editable = true, path = "."}
 numpy = "*"
 matplotlib = "*"
 scipy = "*"
-jupyter = "*"
 
 [requires]
 python_version = "3.7"

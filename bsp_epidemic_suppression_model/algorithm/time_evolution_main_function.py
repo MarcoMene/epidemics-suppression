@@ -133,11 +133,11 @@ def compute_time_evolution(
             )
 
             FAs_recap = (
-                f" FAsapp_ti_gs(infty)={round2_list(FAsapp_ti_gs_infty)}\n"
-                f" FAsnoapp_ti_gs(infty)={round2_list(FAsnoapp_ti_gs_infty)}\n"
-                f" FAsapp_ti(infty)={round2(FAsapp_ti_infty)}\n"
-                f" FAsnoapp_ti(infty)={round2(FAsnoapp_ti_infty)}\n"
-                f" FAs_ti(infty)={round2(FAs_ti_infty)}\n"
+                f" FAsapp_ti_gs(∞)={round2_list(FAsapp_ti_gs_infty)}\n"
+                f" FAsnoapp_ti_gs(∞)={round2_list(FAsnoapp_ti_gs_infty)}\n"
+                f" FAsapp_ti(∞)={round2(FAsapp_ti_infty)}\n"
+                f" FAsnoapp_ti(∞)={round2(FAsnoapp_ti_infty)}\n"
+                f" FAs_ti(∞)={round2(FAs_ti_infty)}\n"
             )
         else:
             FAs_recap = ""
@@ -152,11 +152,11 @@ def compute_time_evolution(
         )
 
         FA_recap = (
-            f" FAapp_ti_gs(infty)={round2_list(FAapp_ti_gs_infty)}\n"
-            f" FAnoapp_ti_gs(infty)={round2_list(FAnoapp_ti_gs_infty)}\n"
-            f" FAapp_ti(infty)={round2(FAapp_ti_infty)}\n"
-            f" FAnoapp_ti(infty)={round2(FAnoapp_ti_infty)}\n"
-            f" FA_ti(infty)={round2(FA_ti_infty)}\n"
+            f" FAapp_ti_gs(∞)={round2_list(FAapp_ti_gs_infty)}\n"
+            f" FAnoapp_ti_gs(∞)={round2_list(FAnoapp_ti_gs_infty)}\n"
+            f" FAapp_ti(∞)={round2(FAapp_ti_infty)}\n"
+            f" FAnoapp_ti(∞)={round2(FAnoapp_ti_infty)}\n"
+            f" FA_ti(∞)={round2(FA_ti_infty)}\n"
         )
 
         FTapp_ti_gs_infty = [FTapp_ti_gs[g](tau_max) for g in gs]
@@ -169,11 +169,11 @@ def compute_time_evolution(
         )
 
         FT_recap = (
-            f" FTapp_ti_gs(infty)={round2_list(FTapp_ti_gs_infty)}\n"
-            f" FTnoapp_ti_gs(infty)={round2_list(FTnoapp_ti_gs_infty)}\n"
-            f" FTapp_ti(infty)={round2(FTapp_ti_infty)}\n"
-            f" FTnoapp_ti(infty)={round2(FTnoapp_ti_infty)}\n"
-            f" FT_ti(infty)={round2(FT_ti_infty)}\n"
+            f" FTapp_ti_gs(∞)={round2_list(FTapp_ti_gs_infty)}\n"
+            f" FTnoapp_ti_gs(∞)={round2_list(FTnoapp_ti_gs_infty)}\n"
+            f" FTapp_ti(∞)={round2(FTapp_ti_infty)}\n"
+            f" FTnoapp_ti(∞)={round2(FTnoapp_ti_infty)}\n"
+            f" FT_ti(∞)={round2(FT_ti_infty)}\n"
         )
 
         R_recap = (

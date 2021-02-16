@@ -11,6 +11,6 @@ if __name__ == "__main__":
         author_email="anm@bendingspoons.com, mm@bendingspoons.com",
         url="https://github.com/MarcoMene/epidemics-suppression",
         packages=find_packages(exclude="demo"),
-        install_requires=["numpy", "scipy", "matplotlib", "jupyter"],
+        install_requires=["numpy", "scipy", "matplotlib"],
         zip_safe=False,
     )

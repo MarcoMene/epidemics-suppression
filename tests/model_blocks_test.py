@@ -5,8 +5,7 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks import (
 )
 
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
-    beta0_sym,
-    beta0_asy,
+    make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
 
 from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
@@ -20,7 +19,8 @@ class TestAlgorithmBlock:
     """Tests each block of the algorithm separately"""
 
     def test_R_suppression(self):
-        r0_ti_gs = [beta0_asy, beta0_sym]
+        _, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
+        beta0_ti_gs = [lambda tau: beta0_gs[0](0, tau), lambda tau: beta0_gs[1](0, tau)]
         xi = 0.8  # Any value in [0,1] will do
         tau_max = 30
 
@@ -34,39 +34,41 @@ class TestAlgorithmBlock:
         ]
 
         (
-            rapp_ti_gs,
-            rnoapp_ti_gs,
+            betaapp_ti_gs,
+            betanoapp_ti_gs,
             Rapp_ti_gs,
             Rnoapp_ti_gs,
         ) = compute_beta_and_R_components_from_FT(
             FTapp_ti_gs=FTapp_ti_gs,
             FTnoapp_ti_gs=FTnoapp_ti_gs,
-            beta0_ti_gs=r0_ti_gs,
+            beta0_ti_gs=beta0_ti_gs,
             xi=xi,
             tau_max=tau_max,
         )
 
-        R0_gs = [integrate(f=r0_ti_gs[g], a=0, b=tau_max) for g in [0, 1]]
+        R0_gs = [integrate(f=beta0_ti_gs[g], a=0, b=tau_max) for g in [0, 1]]
 
         # No suppression for asymptomatic:
         assert all(
-            r0_ti_gs[0](tau) == rapp_ti_gs[0](tau) == rnoapp_ti_gs[0](tau)
+            beta0_ti_gs[0](tau) == betaapp_ti_gs[0](tau) == betanoapp_ti_gs[0](tau)
             for tau in (0, 3, 6, 9, 12, 15)
         )
         assert Rapp_ti_gs[0] == Rnoapp_ti_gs[0] == R0_gs[0]
         # For symptomatic with app, suppression for tau >= 10
-        assert all(r0_ti_gs[1](tau) == rapp_ti_gs[1](tau) for tau in (0, 3, 6, 9))
+        assert all(beta0_ti_gs[1](tau) == betaapp_ti_gs[1](tau) for tau in (0, 3, 6, 9))
         assert all(
-            rapp_ti_gs[1](tau) == (1 - xi) * r0_ti_gs[1](tau)
+            betaapp_ti_gs[1](tau) == (1 - xi) * beta0_ti_gs[1](tau)
             for tau in (10, 13, 16, 19)
         )
         assert (1 - xi) * R0_gs[1] <= Rapp_ti_gs[1] <= R0_gs[1]
         # For symptomatic without app, suppression for tau >= 20
         assert all(
-            r0_ti_gs[1](tau) == rnoapp_ti_gs[1](tau) for tau in (0, 3, 6, 9, 12, 15, 18)
+            beta0_ti_gs[1](tau) == betanoapp_ti_gs[1](tau)
+            for tau in (0, 3, 6, 9, 12, 15, 18)
         )
         assert all(
-            rnoapp_ti_gs[1](tau) == (1 - xi) * r0_ti_gs[1](tau) for tau in (20, 25)
+            betanoapp_ti_gs[1](tau) == (1 - xi) * beta0_ti_gs[1](tau)
+            for tau in (20, 25)
         )
         assert (1 - xi) * R0_gs[1] <= Rnoapp_ti_gs[1] <= R0_gs[1]
 
@@ -164,9 +166,3 @@ class TestAlgorithmBlock:
                 - FAsnoapp_ti_gs[g](tau) * FAcnoapp_ti(tau)
                 for tau in (-10, 0, 8, 10, 12, 15, 20)
             )
-
-
-if __name__ == "__main__":
-    # TestAlgorithStep().test_R_suppression()
-    # TestAlgorithStep().test_compute_FT()
-    TestAlgorithmBlock().test_compute_FA()

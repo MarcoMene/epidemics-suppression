@@ -8,7 +8,9 @@ from bsp_epidemic_suppression_model.math_utilities.functions_utils import round2
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import R0
 
 
-def plot_time_evolution(step_data_list: List[StepData]):
+def plot_time_evolution(
+    step_data_list: List[StepData], plot_components: bool = True
+) -> None:
     """
     Plots time evolution of epidemics-suppression: effective reproduction numbers and other KPIs.
     """
@@ -22,7 +24,7 @@ def plot_time_evolution(step_data_list: List[StepData]):
 
     # R
     R_tplot = fig.add_subplot(211)
-    R_tplot.set_xlabel("t [days]")
+    R_tplot.set_xlabel("t (days)")
     R_tplot.set_ylabel("R_t")
     R_tplot.grid(True)
     R_tplot.set_xlim(0, t_max)
@@ -31,59 +33,62 @@ def plot_time_evolution(step_data_list: List[StepData]):
         [step_data.t for step_data in step_data_list],
         [step_data.R for step_data in step_data_list],
         color="black",
-        label=f"R -> {round2(R_last)}, Eff. {round2(effectiveness_from_R(R_last))}",
+        label=f"R_t → {round2(R_last)}, Eff_t → {round2(effectiveness_from_R(R_last))}",
     ),
-    R_tplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.Rapp for step_data in step_data_list],
-        color="green",
-        label=f"R app -> {round2(Rapp_last)}, Eff. {round2(effectiveness_from_R(Rapp_last))}",
-    ),
-    R_tplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.Rnoapp for step_data in step_data_list],
-        color="blue",
-        label=f"R no app -> {round2(Rnoapp_last)}, Eff. {round2(effectiveness_from_R(Rnoapp_last))}",
-    ),
+    if plot_components:
+        R_tplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.Rapp for step_data in step_data_list],
+            color="green",
+            label=f"R_t app → {round2(Rapp_last)}, Eff_t app → {round2(effectiveness_from_R(Rapp_last))}",
+        ),
+        R_tplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.Rnoapp for step_data in step_data_list],
+            color="blue",
+            label=f"R_t no app → {round2(Rnoapp_last)}, Eff_t no app → {round2(effectiveness_from_R(Rnoapp_last))}",
+        ),
     R_tplot.legend()
 
     # Other metrics
     Pplot = fig.add_subplot(212)
-    Pplot.set_xlabel("t [days]")
+    Pplot.set_xlabel("t (days)")
     Pplot.set_ylabel("Probability")
     Pplot.grid(True)
     Pplot.set_xlim(0, t_max)
     Pplot.set_ylim(0, 1)
-    Pplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.papp for step_data in step_data_list],
-        color="yellow",
-        label="Prob. infected has the app",
-    )
-    Pplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.tildepapp for step_data in step_data_list],
-        color="red",
-        label="Prob. source has the app",
-    )
+    if plot_components:
+        Pplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.papp for step_data in step_data_list],
+            color="yellow",
+            label="Prob. infected has the app",
+        )
+        Pplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.tildepapp for step_data in step_data_list],
+            color="red",
+            label="Prob. source has the app",
+        )
     Pplot.plot(
         [step_data.t for step_data in step_data_list],
         [step_data.FT_infty for step_data in step_data_list],
         color="black",
         label="Prob. that infected tests positive",
     )
-    Pplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.FTapp_infty for step_data in step_data_list],
-        color="green",
-        label="Prob. that infected with app tests positive",
-    )
-    Pplot.plot(
-        [step_data.t for step_data in step_data_list],
-        [step_data.FTnoapp_infty for step_data in step_data_list],
-        color="blue",
-        label="Prob. that infected without app tests positive",
-    )
+    if plot_components:
+        Pplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.FTapp_infty for step_data in step_data_list],
+            color="green",
+            label="Prob. that infected with app tests positive",
+        )
+        Pplot.plot(
+            [step_data.t for step_data in step_data_list],
+            [step_data.FTnoapp_infty for step_data in step_data_list],
+            color="blue",
+            label="Prob. that infected without app tests positive",
+        )
     Pplot.legend()
 
     plt.show()
