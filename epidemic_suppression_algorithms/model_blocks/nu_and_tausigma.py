@@ -1,9 +1,7 @@
 from typing import Callable, List, Optional, Sequence, Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.config import (
-    DISTRIBUTION_NORMALIZATION_TOLERANCE,
-)
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import DISTRIBUTION_NORMALIZATION_TOLERANCE
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
 

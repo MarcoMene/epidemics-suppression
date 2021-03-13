@@ -1,16 +1,12 @@
-from typing import Callable, List, Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 import matplotlib.pyplot as plt
 
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
-    RealRange,
-    effectiveness,
-)
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import R0
+from math_utilities.general_utilities import RealRange, effectiveness
 
 
 def plot_functions(

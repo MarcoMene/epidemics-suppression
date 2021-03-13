@@ -2,6 +2,7 @@ def check_equality_with_precision(x: float, y: float, decimal: int):
     return round(x - y, ndigits=decimal) == 0
 
 
+# TODO
 class TestCornerCases:
     pass
     # def test_no_epidemic_control_scenario(self):

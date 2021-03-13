@@ -1,11 +1,11 @@
 from typing import List, Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
+    FunctionOfTimeUnit,
     generate_discrete_distribution_from_cdf_function,
     linear_combination_discrete_distributions_by_values,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenarios import FunctionOfTimeUnit
 
 
 def compute_cut_checkF_t(

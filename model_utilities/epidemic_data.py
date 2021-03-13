@@ -8,23 +8,20 @@ into symptomatic and asymptomatic.
 The source for all the numeric values is
 https://science.sciencemag.org/content/368/6491/eabb6936
 """
-from typing import Callable, Tuple
+from typing import Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.config import (
+from math_utilities.config import (
     DISTRIBUTION_NORMALIZATION_TOLERANCE,
     TAU_MAX_IN_UNITS,
     TAU_UNIT_IN_DAYS,
     UNITS_IN_ONE_DAY,
 )
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
     generate_discrete_distribution_from_cdf_function,
     generate_discrete_distribution_from_pdf_function,
 )
-from bsp_epidemic_suppression_model.math_utilities.distributions_collection import (
-    lognormal_cdf,
-    weibull_pdf,
-)
+from math_utilities.distributions_collection import lognormal_cdf, weibull_pdf
 
 # Default effective reproduction number
 R0 = 1

@@ -1,13 +1,9 @@
 from typing import Callable, Iterator, Optional, Sequence, Union
 
-from bsp_epidemic_suppression_model.math_utilities.config import (
-    DISTRIBUTION_NORMALIZATION_TOLERANCE,
-    FLOAT_TOLERANCE_FOR_EQUALITIES,
-)
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
-    float_sequences_match,
-    normalize_sequence,
-)
+from math_utilities.config import DISTRIBUTION_NORMALIZATION_TOLERANCE, UNITS_IN_ONE_DAY
+from math_utilities.general_utilities import float_sequences_match, normalize_sequence
+
+FunctionOfTimeUnit = Callable[[int], float]
 
 
 class DiscreteDistribution:
@@ -154,7 +150,7 @@ class DiscreteDistribution:
             )
 
     def rescale_by_function(
-        self, scale_function: Callable[[int], float]
+        self, scale_function: FunctionOfTimeUnit
     ) -> "DiscreteDistribution":
         self._compute_pmf_values()
         rescaled_pmf_values = [
@@ -202,7 +198,7 @@ class DiscreteDistribution:
 
     def integrate(
         self,
-        integrand: Callable[[int], float],
+        integrand: FunctionOfTimeUnit,
         tau_min: Optional[int] = None,
         tau_max: Optional[int] = None,
     ):
@@ -292,12 +288,18 @@ def generate_discrete_distribution_from_pdf_function(
 
 
 def generate_discrete_distribution_from_cdf_function(
-    cdf: Callable[[int], float], tau_min: int, tau_max: int,
+    cdf: FunctionOfTimeUnit, tau_min: int, tau_max: int,
 ) -> DiscreteDistributionOnNonNegatives:
     cdf_values = [cdf(tau) for tau in range(tau_min, tau_max + 1)]
 
     return DiscreteDistributionOnNonNegatives(
         cdf_values=cdf_values, tau_min=tau_min, improper=cdf_values[-1] != 1
+    )
+
+
+def delta_distribution(peak_tau_in_days: float) -> DiscreteDistributionOnNonNegatives:
+    return DiscreteDistributionOnNonNegatives(
+        pmf_values=[1], tau_min=int(round(peak_tau_in_days * UNITS_IN_ONE_DAY, 0))
     )
 
 

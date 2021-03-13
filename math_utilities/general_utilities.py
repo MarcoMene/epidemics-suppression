@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 from typing import Sequence
 
-from bsp_epidemic_suppression_model.math_utilities.config import (
-    FLOAT_TOLERANCE_FOR_EQUALITIES,
-)
+from math_utilities.config import FLOAT_TOLERANCE_FOR_EQUALITIES
 
 
 def normalize_sequence(seq: Sequence[float]) -> Sequence[float]:

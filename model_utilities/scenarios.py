@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, List, Tuple
+from typing import Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
+    FunctionOfTimeUnit,
 )
 
 
@@ -58,9 +59,6 @@ class Scenario(ABC):
         return len(self.p_gs)
 
 
-FunctionOfTimeUnit = Callable[[int], float]
-
-
 @dataclass
 class HomogeneousScenario(Scenario):
 
@@ -102,21 +100,3 @@ class ScenarioWithApp(Scenario):
 
     def tuples_to_check(self) -> Tuple[Tuple, ...]:
         return self.ssapp, self.ssnoapp
-
-
-def homogeneous_to_two_components(
-    homogeneous_scenario: HomogeneousScenario,
-) -> ScenarioWithApp:
-    return ScenarioWithApp(
-        p_gs=homogeneous_scenario.p_gs,
-        b0_gs=homogeneous_scenario.b0_gs,
-        t_0=homogeneous_scenario.t_0,
-        ssapp=(lambda t: 0, lambda t: 0),
-        ssnoapp=homogeneous_scenario.ss,
-        scapp=lambda t: 0,
-        scnoapp=homogeneous_scenario.sc,
-        xi=homogeneous_scenario.xi,
-        papp=lambda tau: 0,
-        DeltaATapp=DiscreteDistributionOnNonNegatives(pmf_values=[1], tau_min=0),
-        DeltaATnoapp=homogeneous_scenario.DeltaAT,
-    )

@@ -1,16 +1,13 @@
-from bsp_epidemic_suppression_model.algorithm.model_blocks.nu_and_tausigma import (
+from epidemic_suppression_algorithms.model_blocks.nu_and_tausigma import (
     check_b_negative_times,
     compute_tausigma_and_nu_at_time_t,
     compute_tausigma_and_nu_components_at_time_t,
     compute_tausigma_and_nu_components_at_time_t_with_app,
 )
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
-    float_sequences_match,
-    floats_match,
-)
+from math_utilities.general_utilities import float_sequences_match, floats_match
 
 
 class TestNuTausigmaComputation:

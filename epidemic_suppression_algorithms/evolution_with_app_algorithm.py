@@ -1,28 +1,30 @@
 from typing import List, Optional, Tuple
 
-from bsp_epidemic_suppression_model.algorithm.model_blocks.nu_and_tausigma import (
+from epidemic_suppression_algorithms.model_blocks.nu_and_tausigma import (
     compute_tausigma_and_nu_components_at_time_t,
     compute_tausigma_and_nu_components_at_time_t_with_app,
 )
-from bsp_epidemic_suppression_model.algorithm.model_blocks.testing_time_and_b_t_suppression import (
+from epidemic_suppression_algorithms.model_blocks.testing_time_and_b_t_suppression import (
     compute_suppressed_b_t,
     compute_tauT_t,
 )
-from bsp_epidemic_suppression_model.algorithm.model_blocks.time_evolution_block import (
+from epidemic_suppression_algorithms.model_blocks.time_evolution_block import (
     compute_tauAc_t_two_components,
 )
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenarios import ScenarioWithApp
+from model_utilities.scenarios import ScenarioWithApp
 
 
-def compute_time_evolution_two_component(
+def compute_time_evolution_with_app(
     scenario: ScenarioWithApp,
     t_max_in_days: int,
     nu_start: int,
     b_negative_times: Optional[Tuple[DiscreteDistributionOnNonNegatives, ...]] = None,
+    verbose: bool = True,
+    threshold_to_stop: Optional[float] = None,
 ) -> Tuple[
     List[float],
     List[float],
@@ -210,7 +212,7 @@ def compute_time_evolution_two_component(
         FT_app_infty.append(FT_t_app_infty)
         FT_noapp_infty.append(FT_t_noapp_infty)
 
-        if t % UNITS_IN_ONE_DAY == 0:
+        if verbose and t % UNITS_IN_ONE_DAY == 0:
             EtauC_t_gs_app_in_days = [
                 b_t_g.normalize().mean() * UNITS_IN_ONE_DAY for b_t_g in b_t_gs_app
             ]
@@ -240,6 +242,17 @@ def compute_time_evolution_two_component(
                     FT_t(∞) = {round(FT_t_infty, 2)}
                     """
             )
+
+        if (
+            threshold_to_stop is not None
+            and t > 10
+            and (
+                abs((R[-2] - R[-1]) / R[-2]) < threshold_to_stop
+                and abs((FT_infty[-2] - FT_infty[-1]) / FT_infty[-2])
+                < threshold_to_stop
+            )
+        ):
+            break
 
     return (
         t_in_days_list,

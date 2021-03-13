@@ -1,7 +1,7 @@
 from typing import Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.config import TAU_MAX_IN_UNITS
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import TAU_MAX_IN_UNITS
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
     generate_discrete_distribution_from_cdf_function,
 )

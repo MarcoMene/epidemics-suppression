@@ -1,10 +1,12 @@
-from bsp_epidemic_suppression_model.algorithm.free_evolution_algorithm import (
+from epidemic_suppression_algorithms.free_evolution_algorithm import (
     free_evolution_by_severity,
     free_evolution_global,
 )
-from bsp_epidemic_suppression_model.algorithm.model_blocks import check_b_negative_times
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+from epidemic_suppression_algorithms.model_blocks.nu_and_tausigma import (
+    check_b_negative_times,
+)
+from math_utilities.config import UNITS_IN_ONE_DAY
+from model_utilities.epidemic_data import (
     b0,
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )

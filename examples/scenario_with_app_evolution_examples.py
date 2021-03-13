@@ -1,19 +1,14 @@
-from bsp_epidemic_suppression_model.algorithm.evolution_with_app_algorithm import (
-    compute_time_evolution_two_component,
+from epidemic_suppression_algorithms.evolution_with_app_algorithm import (
+    compute_time_evolution_with_app,
 )
-from bsp_epidemic_suppression_model.examples.plotting_utils import (
-    plot_time_evolution_with_app,
-)
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
-    DiscreteDistributionOnNonNegatives,
-)
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+from examples.plotting_utils import plot_time_evolution_with_app
+from math_utilities.discrete_distributions_utils import delta_distribution
+from model_utilities.epidemic_data import (
     R0,
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
     tauS,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenarios import ScenarioWithApp
+from model_utilities.scenarios import ScenarioWithApp
 
 p_gs, b0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
@@ -38,12 +33,8 @@ def time_evolution_two_component_model_optimistic_scenario_example():
         scapp=lambda t: 0.7 if t >= t_0 else 0,
         scnoapp=lambda t: 0.7 if t >= t_0 else 0,
         xi=lambda t: 0.9 if t >= t_0 else 0,
-        DeltaATapp=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_in_days * UNITS_IN_ONE_DAY
-        ),
-        DeltaATnoapp=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_in_days * UNITS_IN_ONE_DAY
-        ),
+        DeltaATapp=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
+        DeltaATnoapp=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
         papp=lambda t: 0.5,
     )
 
@@ -58,7 +49,7 @@ def time_evolution_two_component_model_optimistic_scenario_example():
         FT_infty,
         FT_app_infty,
         FT_noapp_infty,
-    ) = compute_time_evolution_two_component(
+    ) = compute_time_evolution_with_app(
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,
@@ -102,13 +93,9 @@ def time_evolution_two_component_model_optimistic_scenario_example2():
         scapp=lambda t: 0.7 if t >= t_0 else 0,
         scnoapp=lambda t: 0.3 if t >= t_0 else 0,
         xi=lambda t: 0.9 if t >= t_0 else 0,
-        DeltaATapp=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_app_in_days * UNITS_IN_ONE_DAY
-        ),
-        DeltaATnoapp=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_noapp_in_days * UNITS_IN_ONE_DAY
-        ),
-        papp=lambda t: 0.05 * t if t<10 else 0.5,
+        DeltaATapp=delta_distribution(peak_tau_in_days=DeltaAT_app_in_days),
+        DeltaATnoapp=delta_distribution(peak_tau_in_days=DeltaAT_noapp_in_days),
+        papp=lambda t: 0.05 * t if t < 10 else 0.5,
     )
 
     (
@@ -122,7 +109,7 @@ def time_evolution_two_component_model_optimistic_scenario_example2():
         FT_infty,
         FT_app_infty,
         FT_noapp_infty,
-    ) = compute_time_evolution_two_component(
+    ) = compute_time_evolution_with_app(
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,

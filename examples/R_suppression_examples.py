@@ -3,26 +3,16 @@ Some examples of computations of the suppressed effective reproduction number, g
 positive testing for an infected individual.
 """
 
-import scipy.integrate as integrate
-from numpy import heaviside
-
-from bsp_epidemic_suppression_model.algorithm.model_blocks.testing_time_and_b_t_suppression import (
+from epidemic_suppression_algorithms.model_blocks.testing_time_and_b_t_suppression import (
     compute_suppressed_b_t,
 )
-from bsp_epidemic_suppression_model.examples.plotting_utils import (
-    plot_discrete_distributions,
-)
-from bsp_epidemic_suppression_model.math_utilities.config import (
-    TAU_MAX_IN_UNITS,
-    TAU_UNIT_IN_DAYS,
-    UNITS_IN_ONE_DAY,
-)
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from examples.plotting_utils import plot_discrete_distributions
+from math_utilities.config import TAU_MAX_IN_UNITS, UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
     generate_discrete_distribution_from_cdf_function,
 )
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import b0
-from bsp_epidemic_suppression_model.old_stuff.epidemic_data import FS, beta0
+from model_utilities.epidemic_data import b0, tauS
 
 tau_max = 30
 step = 0.05
@@ -58,7 +48,7 @@ def R_suppression_due_to_symptoms_only():
     Deltat_test = 4
     ss = 0.2
 
-    FT = lambda tau: ss * FS(tau - Deltat_test)  # CDF of testing time
+    FT = lambda tau: ss * tauS.cdf(tau - Deltat_test)  # CDF of testing time
     xi = 1.0  # Probability of (immediate) isolation given positive test
 
     tauT = generate_discrete_distribution_from_cdf_function(

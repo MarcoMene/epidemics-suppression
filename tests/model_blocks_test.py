@@ -1,18 +1,18 @@
-from bsp_epidemic_suppression_model.algorithm.model_blocks.testing_time_and_b_t_suppression import (
+from epidemic_suppression_algorithms.model_blocks.testing_time_and_b_t_suppression import (
     compute_suppressed_b_t,
     compute_tauT_t,
 )
-from bsp_epidemic_suppression_model.algorithm.model_blocks.time_evolution_block import (
+from epidemic_suppression_algorithms.model_blocks.time_evolution_block import (
     compute_tauAc_t,
     compute_tauAc_t_two_components,
 )
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
     linear_combination_discrete_distributions_by_values,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import floats_match
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+from math_utilities.general_utilities import floats_match
+from model_utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
 

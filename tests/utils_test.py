@@ -1,4 +1,4 @@
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistribution,
     DiscreteDistributionOnNonNegatives,
     linear_combination_discrete_distributions_by_values,

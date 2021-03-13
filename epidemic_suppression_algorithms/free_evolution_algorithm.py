@@ -1,17 +1,13 @@
 from typing import List, Optional, Sequence, Tuple
 
-from bsp_epidemic_suppression_model.algorithm.model_blocks import (
+from epidemic_suppression_algorithms.model_blocks.nu_and_tausigma import (
     compute_tausigma_and_nu_at_time_t,
     compute_tausigma_and_nu_components_at_time_t,
 )
-from bsp_epidemic_suppression_model.math_utilities.config import (
-    TAU_UNIT_IN_DAYS,
-    UNITS_IN_ONE_DAY,
-)
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from math_utilities.config import TAU_UNIT_IN_DAYS, UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import round2
 
 
 def free_evolution_global(
@@ -51,7 +47,7 @@ def free_evolution_global(
             print(
                 f"""t = {t_in_days} days
                     nu_t = {nu[t]}
-                    R_t = {round2(R_t)}
+                    R_t = {round(R_t, 2)}
                     Fsigma_t(∞) = {tausigma_t.total_mass}
                     """
             )
@@ -110,7 +106,7 @@ def free_evolution_by_severity(
             print(
                 f"""t = {t_in_days} days
             nu_t_gs = {tuple(nu_t_gs)},   nu_t = {nu[t]}
-            R_t_gs = {R_t_gs},    R_t = {round2(R_t)}
+            R_t_gs = {R_t_gs},    R_t = {round(R_t, 2)}
             Fsigmags_t(∞) = {tuple(tausigmag_t.total_mass for tausigmag_t in tausigmags_t)}
             """
             )

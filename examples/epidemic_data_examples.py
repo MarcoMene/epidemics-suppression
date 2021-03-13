@@ -2,15 +2,8 @@
 Some examples printing and plotting the epidemic data used as inputs of the model.
 """
 
-from bsp_epidemic_suppression_model.examples.plotting_utils import (
-    plot_discrete_distributions,
-)
-
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
-    b0,
-    rho0_discrete,
-    tauS,
-)
+from examples.plotting_utils import plot_discrete_distributions
+from model_utilities.epidemic_data import b0, rho0_discrete, tauS
 
 
 def plot_generation_time():

@@ -1,19 +1,17 @@
-from bsp_epidemic_suppression_model.algorithm.homogeneous_evolution_algorithm import (
+from epidemic_suppression_algorithms.homogeneous_evolution_algorithm import (
     compute_time_evolution_homogeneous_case,
 )
-from bsp_epidemic_suppression_model.examples.plotting_utils import (
-    plot_homogeneous_time_evolution,
-)
-from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
-from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
+from examples.plotting_utils import plot_homogeneous_time_evolution
+from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
+    delta_distribution,
 )
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+from model_utilities.epidemic_data import (
     R0,
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
     tauS,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenarios import HomogeneousScenario
+from model_utilities.scenarios import HomogeneousScenario
 
 p_gs, b0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
@@ -36,9 +34,7 @@ def time_evolution_homogeneous_model_optimistic_scenario_example():
         ss=(lambda t: 0, lambda t: 0.5 if t >= t_0 else 0),
         sc=lambda t: 0.7 if t >= t_0 else 0,
         xi=lambda t: 0.9 if t >= t_0 else 0,
-        DeltaAT=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_in_days * UNITS_IN_ONE_DAY
-        ),
+        DeltaAT=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
     )
 
     (
@@ -53,6 +49,7 @@ def time_evolution_homogeneous_model_optimistic_scenario_example():
         t_max_in_days=t_max_in_days,
         nu_start=1000,
         b_negative_times=b0_gs,
+        threshold_to_stop=0.001,
     )
 
     plot_homogeneous_time_evolution(
@@ -93,9 +90,7 @@ def time_evolution_homogeneous_model_optimistic_scenario_schematic_data_example(
         ss=(lambda t: 0, lambda t: 0.5 if t >= t_0 else 0),
         sc=lambda t: 0.7 if t >= t_0 else 0,
         xi=lambda t: 0.9 if t >= t_0 else 0,
-        DeltaAT=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_in_days * UNITS_IN_ONE_DAY
-        ),
+        DeltaAT=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
     )
 
     (
@@ -140,14 +135,13 @@ def time_evolution_homogeneous_model_no_measures_example():
         ss=(lambda t: 0, lambda t: 0),
         sc=lambda t: 0,
         xi=lambda t: 0,
-        DeltaAT=DiscreteDistributionOnNonNegatives(
-            pmf_values=[1], tau_min=DeltaAT_in_days * UNITS_IN_ONE_DAY
-        ),
+        DeltaAT=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
     )
 
     (
         t_in_days_list,
         nu,
+        nu0,
         R,
         R_by_severity,
         FT_infty,
