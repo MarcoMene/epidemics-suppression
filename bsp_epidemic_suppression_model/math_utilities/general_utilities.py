@@ -11,13 +11,6 @@ def normalize_sequence(seq: Sequence[float]) -> Sequence[float]:
     return type(seq)(x / s for x in seq)
 
 
-def round2(number: float) -> float:
-    """
-    Rounds a number to the second decimal.
-    """
-    return round(number, 2)
-
-
 def floats_match(x: float, y: float, precision: float = FLOAT_TOLERANCE_FOR_EQUALITIES):
     return abs(x - y) <= precision
 
@@ -34,6 +27,10 @@ def float_sequences_match(
         return True
     except AssertionError:
         return False
+
+
+def effectiveness(R: float, R0: float) -> float:
+    return 1 - R / R0
 
 
 @dataclass

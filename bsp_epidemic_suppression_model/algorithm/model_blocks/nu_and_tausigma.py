@@ -32,7 +32,7 @@ def compute_tausigma_and_nu_components_at_time_t(
 ) -> Tuple[Tuple[float, ...], Optional[Tuple[DiscreteDistributionOnNonNegatives, ...]]]:
     """
     Computes, for each g:
-    - the number nu_t_g of people infected at t by someone with severity g
+    - the number nug_t of people infected at t by someone with severity g
     - the improper distribution tausigmag_t of probabilities to be infected by someone with
       severity g that was infected at a given time prior to t
     :param t: the absolute time at which we want to compute tausigma
@@ -44,7 +44,7 @@ def compute_tausigma_and_nu_components_at_time_t(
      at negative times is 1, to give meaningful results (as we assume that nu at negative times is
      constantly equal to nu_0)
     :param nu_negative_times: the (constant) number of people infected at a time t<0.
-    :return: The tuples (nu_t_g) and (tausigmag_t).
+    :return: The tuples (nug_t) and (tausigmag_t).
     """
     if t == 0 and b_negative_times is None:
         raise ValueError("No computation can be done at t=0 without past data.")
@@ -54,41 +54,41 @@ def compute_tausigma_and_nu_components_at_time_t(
 
     gs = range(len(p_gs))
 
-    m_t_gs = []
-    nu_t_gs = []
+    mgs_t = []
+    nugs_t = []
 
     for g in gs:
-        # Let m_t_g(tau) be the number of people infected at t by someone infected on t - tau
+        # Let mg_t(tau) be the number of people infected at t by someone infected on t - tau
         # with severity g. We create a list m_t_g_pmf_values of these numbers for tau = 1,2,...
-        m_t_g_pmf_values = [
+        mg_t_pmf_values = [
             p_gs[g] * b[t - tau][g].pmf(tau) * nu[t - tau] for tau in range(1, t + 1)
         ]
         if b_negative_times is not None and nu_negative_times is not None:
             tau_max_beta_negative = b_negative_times[g].tau_max
-            m_t_g_pmf_values += [
+            mg_t_pmf_values += [
                 p_gs[g] * b_negative_times[g].pmf(tau) * nu_negative_times
                 for tau in range(t + 1, tau_max_beta_negative + 1)
             ]
-        m_t_g = DiscreteDistributionOnNonNegatives(
-            pmf_values=m_t_g_pmf_values, tau_min=1, improper=True
+        mg_t = DiscreteDistributionOnNonNegatives(
+            pmf_values=mg_t_pmf_values, tau_min=1, improper=True
         )
-        # Now nu_t_g (number of people infected at t by someone with severity g) is the sum of
-        # m_t_g(tau) for all tau:
-        nu_t_g = m_t_g.total_mass
-        nu_t_gs.append(nu_t_g)
-        m_t_gs.append(m_t_g)
+        # Now nug_t (number of people infected at t by someone with severity g) is the sum of
+        # mg_t(tau) for all tau:
+        nug_t = mg_t.total_mass
+        nugs_t.append(nug_t)
+        mgs_t.append(mg_t)
 
-    nu_t = sum(nu_t_gs)  # People infected at t
+    nu_t = sum(nugs_t)  # People infected at t
     if nu_t == 0:
-        return tuple(nu_t_gs), None
-    tausigmags_t = [m_t_g.rescale_by_factor(1 / nu_t) for m_t_g in m_t_gs]
+        return tuple(nugs_t), None
+    tausigmags_t = [mg_t.rescale_by_factor(1 / nu_t) for mg_t in mgs_t]
 
     # Check that tausigma_t is correctly normalized (for t = 0, this also checks that nu_t is
     # nu_negative_times):
     discrepancy = abs(sum(tausigmag_t.total_mass for tausigmag_t in tausigmags_t) - 1)
     assert discrepancy < DISTRIBUTION_NORMALIZATION_TOLERANCE
 
-    return tuple(nu_t_gs), tuple(tausigmags_t)
+    return tuple(nugs_t), tuple(tausigmags_t)
 
 
 def compute_tausigma_and_nu_at_time_t(
@@ -131,18 +131,22 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
     Optional[Tuple[DiscreteDistributionOnNonNegatives, ...]],
 ]:
     """
-    Computes, for each g:  # TODO
-    - the number nu_t_g of people infected at t by someone with severity g
-    - the improper distribution tausigmag_t of probabilities to be infected by someone with
-      severity g that was infected at a given time prior to t
-    :param t: the absolute time at which we want to compute tausigma
-    :param b: the sequence of discretized infectiousnesses from time 0 to at least t-1
-    :param nu: the number of infected people, from time 0 to t-1
-    :param p_gs: the tuple of fractions of infected people with given severity
+    Computes, for each g, a:
+    - the number nuga_t of people infected at t by someone with severity g and app/no app status a;
+    - the improper distribution tausigmaga_t of probabilities to be infected by someone with
+      severity g app/no app status a,that was infected at a given time prior to t.
+    :param t: the absolute time at which we want to compute tausigma.
+    :param b_app: the sequence of discretized infectiousnesses from time 0 to at least t-1,
+      for individuals with the app.
+    :param b_noapp: the sequence of discretized infectiousnesses from time 0 to at least t-1,
+      for individuals without the app.
+    :param nu: the number of infected people, from time 0 to t-1.
+    :param p_gs: the tuple of fractions of infected people with given severity.
+    :param papp: the probability that an individual infected at t has the app, as a function of t.
     :param b_negative_times: the (optional) tuple of discretized infectiousness distributions (one
      for each severity) at times t<0. They should be normalized in such a way that R
      at negative times is 1, to give meaningful results (as we assume that nu at negative times is
-     constantly equal to nu_0)
+     constantly equal to nu_0).
     :param nu_negative_times: the (constant) number of people infected at a time t<0.
     :return: The tuples (nu_t_g) and (tausigmag_t).
     """
@@ -154,6 +158,7 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
 
     gs = range(len(p_gs))
 
+    # app/no app status: a = [0, 1] = [app, noapp]
     p_as = [papp, lambda t: 1 - papp(t)]
     b = [b_app, b_noapp]
 
@@ -189,8 +194,8 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
     nu_t = sum(nugsas_t[0]) + sum(nugsas_t[1])  # People infected at t
     if nu_t == 0:
         return tuple(nugsas_t[0]), None, tuple(nugsas_t[1]), None
-    tausigmagsapp_t = [m_t_g.rescale_by_factor(1 / nu_t) for m_t_g in mgsas_t[0]]
-    tausigmagsnoapp_t = [m_t_g.rescale_by_factor(1 / nu_t) for m_t_g in mgsas_t[1]]
+    tausigmagsapp_t = [mg_t.rescale_by_factor(1 / nu_t) for mg_t in mgsas_t[0]]
+    tausigmagsnoapp_t = [mg_t.rescale_by_factor(1 / nu_t) for mg_t in mgsas_t[1]]
 
     # Check that tausigma_t is correctly normalized (for t = 0, this also checks that nu_t is
     # nu_negative_times):

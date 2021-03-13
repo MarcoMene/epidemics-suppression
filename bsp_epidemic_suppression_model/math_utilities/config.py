@@ -1,4 +1,4 @@
-UNITS_IN_ONE_DAY = 10  # TODO
+UNITS_IN_ONE_DAY = 1  # TODO
 TAU_UNIT_IN_DAYS = 1 / UNITS_IN_ONE_DAY
 
 # Max of the support of discrete distributions on non-negative times, when created approximating

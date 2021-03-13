@@ -35,7 +35,7 @@ def dependency_on_testing_timeliness_homogeneous_model_example():
     """
     n_iterations = 8
 
-    # gs = [asymptomatic, symptomatic]
+    # Severities: gs = [asymptomatic, symptomatic]
     p_gs, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
     DeltaAT_values_list = list(range(0, 10))

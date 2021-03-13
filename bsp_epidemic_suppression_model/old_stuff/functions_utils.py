@@ -5,7 +5,6 @@ from scipy import integrate as sci_integrate
 
 from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
     RealRange,
-    round2,
 )
 
 
@@ -54,7 +53,7 @@ def round2_sequence(l: Sequence[float]) -> List[float]:
     """
     Rounds a list of numbers to the second decimal.
     """
-    return [round2(number) for number in l]
+    return [round(number, 2) for number in l]
 
 
 def convolve(f: Callable[[float], float], delta: DeltaMeasure):

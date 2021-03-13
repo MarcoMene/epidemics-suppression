@@ -14,8 +14,8 @@ def compute_tauT_t(
 ):
     """
     Computes the testing time distributions tauT_t_g from the notification time distributions:
-        tauA_t_g = min(tauAs_t_g, tauAc_t)
-        tauT_t_g = tauA_t_g + DeltaAT
+        tauA_t_g = min(tauAs_t_g, tauAc_t),
+        tauT_t_g = tauA_t_g + DeltaAT.
     """
     gs = range(len(tauAs_t_gs))
     tauT_t_gs = []
@@ -41,12 +41,12 @@ def compute_suppressed_b_t(
     xi_t: float,
 ) -> Tuple[DiscreteDistributionOnNonNegatives, ...]:
     """
-    Computes b_t using the suppression formula:  # TODO
-
-    :param b0_t_gs: the tuple of discrete infectiousnesses at t, one per severity
-    :param tauT_t_gs:
-    :param xi_t: the suppression factor at time t
-    :return:
+    Computes b_t using the suppression formula:
+      b_t_g = b0_t_g (1 - xi_t * FT_{t,g}).
+    :param b0_t_gs: the tuple of default discrete infectiousnesses at t, one for each severity g.
+    :param tauT_t_gs: the tuple of testing time distributions, one for each g.
+    :param xi_t: the suppression factor at time t.
+    :return: the tuple of discrete infectiousnesses at t, one for each severity g.
     """
     b_t = []
     for b0_t_g, tau_T_g in zip(b0_t_gs, tauT_t_gs):

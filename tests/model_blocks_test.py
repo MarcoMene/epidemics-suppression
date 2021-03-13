@@ -1,7 +1,3 @@
-from bsp_epidemic_suppression_model.algorithm.model_blocks.nu_and_tausigma import (
-    compute_tausigma_and_nu_at_time_t,
-    compute_tausigma_and_nu_components_at_time_t_with_app,
-)
 from bsp_epidemic_suppression_model.algorithm.model_blocks.testing_time_and_b_t_suppression import (
     compute_suppressed_b_t,
     compute_tauT_t,

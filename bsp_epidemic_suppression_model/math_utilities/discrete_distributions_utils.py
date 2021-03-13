@@ -13,7 +13,7 @@ from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
 class DiscreteDistribution:
     # Maximum deviation from 1 in initialization of proper distributions:
     NORMALIZATION_TOLERANCE = DISTRIBUTION_NORMALIZATION_TOLERANCE
-    _COMPUTE_PMF_AND_CDF_ON_INIT = True
+    _COMPUTE_PMF_AND_CDF_ON_INIT = False
 
     def __init__(
         self,
@@ -95,7 +95,7 @@ class DiscreteDistribution:
             return 1
         if self._cdf_support_values is not None:
             return self._cdf_support_values[-1] if self._cdf_support_values else 0
-        if self._cdf_support_values is not None:
+        if self._pmf_support_values is not None:
             return sum(self._pmf_support_values)
 
     def mean(self) -> float:
@@ -166,6 +166,7 @@ class DiscreteDistribution:
         )
 
     def normalize(self) -> "DiscreteDistribution":
+        self._compute_cdf_values()
         total_mass = self.total_mass
         rescaled_cdf_values = [v / total_mass for v in self._cdf_support_values]
         return self.__class__(

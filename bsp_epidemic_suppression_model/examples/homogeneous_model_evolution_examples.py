@@ -1,12 +1,15 @@
 from bsp_epidemic_suppression_model.algorithm.homogeneous_evolution_algorithm import (
     compute_time_evolution_homogeneous_case,
 )
-from bsp_epidemic_suppression_model.examples.plot_results import plot_time_evolution
+from bsp_epidemic_suppression_model.examples.plotting_utils import (
+    plot_homogeneous_time_evolution,
+)
 from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DAY
 from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+    R0,
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
     tauS,
 )
@@ -52,8 +55,13 @@ def time_evolution_homogeneous_model_optimistic_scenario_example():
         b_negative_times=b0_gs,
     )
 
-    plot_time_evolution(
-        t_in_days_sequence=t_in_days_list, R=R, FT_infty_sequence=FT_infty
+    plot_homogeneous_time_evolution(
+        t_in_days_sequence=t_in_days_list,
+        R_ts=R,
+        R0=R0,
+        FT_infty_sequence=FT_infty,
+        nu_ts=nu,
+        nu0_ts=nu0,
     )
 
 
@@ -104,8 +112,13 @@ def time_evolution_homogeneous_model_optimistic_scenario_schematic_data_example(
         b_negative_times=b0_gs,
     )
 
-    plot_time_evolution(
-        t_in_days_sequence=t_in_days_list, R=R, FT_infty_sequence=FT_infty
+    plot_homogeneous_time_evolution(
+        t_in_days_sequence=t_in_days_list,
+        R_ts=R,
+        R0=R0,
+        FT_infty_sequence=FT_infty,
+        nu_ts=nu,
+        nu0_ts=nu0,
     )
 
 
@@ -133,7 +146,7 @@ def time_evolution_homogeneous_model_no_measures_example():
     )
 
     (
-        t_in_days_sequence,
+        t_in_days_list,
         nu,
         R,
         R_by_severity,
@@ -145,4 +158,11 @@ def time_evolution_homogeneous_model_no_measures_example():
         b_negative_times=b0_gs,
     )
 
-    # plot_time_evolution(t_in_days_sequence=t_in_days_sequence, R=R, FT_infty_sequence=FT_infty)
+    plot_homogeneous_time_evolution(
+        t_in_days_sequence=t_in_days_list,
+        R_ts=R,
+        R0=R0,
+        FT_infty_sequence=FT_infty,
+        nu_ts=nu,
+        nu0_ts=nu0,
+    )

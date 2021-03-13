@@ -2,7 +2,6 @@ from typing import Sequence
 
 from matplotlib import pyplot as plt
 
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import round2
 from bsp_epidemic_suppression_model.old_stuff.epidemic_data import R0
 from dev.old_stuff.algorithm.model_blocks import effectiveness_from_R
 

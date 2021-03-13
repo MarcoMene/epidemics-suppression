@@ -14,7 +14,6 @@ from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DA
 from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import round2
 from bsp_epidemic_suppression_model.model_utilities.scenarios import HomogeneousScenario
 
 
@@ -138,12 +137,12 @@ def compute_time_evolution_homogeneous_case(
                 f"""t = {t_in_days} days
                     nu_t_gs = {tuple(nu_t_gs)},   nu_t = {int(round(nu_t, 0))}
                     nu0_t = {int(round(nu0_t, 0))}
-                    R_t_gs = {R_t_gs},    R_t = {round2(R_t)}
+                    R_t_gs = {R_t_gs},    R_t = {round(R_t, 2)}
                     EtauC_t_gs = {tuple(EtauC_t_gs_in_days)} days
                     Fsigmags_t(∞) = {tuple(tausigmag_t.total_mass for tausigmag_t in tausigmags_t)}
                     FAs_t_gs(∞) = {tuple(tauAs_t_g.total_mass for tauAs_t_g in tauAs_t_gs)}
                     FAc_t(∞) = {tauAc_t.total_mass}
-                    FT_t_gs(∞) = {tuple(tauT_t_g.total_mass for tauT_t_g in tauT_t_gs)},   FT_t(∞) = {round2(FT_t_infty)}
+                    FT_t_gs(∞) = {tuple(tauT_t_g.total_mass for tauT_t_g in tauT_t_gs)},   FT_t(∞) = {round(FT_t_infty, 2)}
                     """
             )
 

@@ -11,7 +11,6 @@ from bsp_epidemic_suppression_model.algorithm.model_blocks.testing_time_and_b_t_
 )
 from bsp_epidemic_suppression_model.examples.plotting_utils import (
     plot_discrete_distributions,
-    plot_functions,
 )
 from bsp_epidemic_suppression_model.math_utilities.config import (
     TAU_MAX_IN_UNITS,
@@ -22,10 +21,8 @@ from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils 
     DiscreteDistributionOnNonNegatives,
     generate_discrete_distribution_from_cdf_function,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import RealRange
 from bsp_epidemic_suppression_model.model_utilities.epidemic_data import b0
 from bsp_epidemic_suppression_model.old_stuff.epidemic_data import FS, beta0
-from dev.old_stuff.algorithm.model_blocks import suppressed_beta_from_test_cdf
 
 tau_max = 30
 step = 0.05

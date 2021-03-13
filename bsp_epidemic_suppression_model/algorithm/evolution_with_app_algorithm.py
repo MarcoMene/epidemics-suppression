@@ -15,9 +15,7 @@ from bsp_epidemic_suppression_model.math_utilities.config import UNITS_IN_ONE_DA
 from bsp_epidemic_suppression_model.math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from bsp_epidemic_suppression_model.math_utilities.general_utilities import round2
 from bsp_epidemic_suppression_model.model_utilities.scenarios import (
-    HomogeneousScenario,
     ScenarioWithApp,
 )
 
@@ -201,7 +199,7 @@ def compute_time_evolution_two_component(
                     nu0_t = {int(round(nu0_t, 0))}
                     R_t_gs_app = {R_t_gs_app},    R_t_app = {R_t_app},    
                     R_t_gs_noapp = {R_t_gs_noapp},    R_t_noapp = {R_t_noapp},        
-                    R_t = {round2(R_t)}
+                    R_t = {round(R_t, 2)}
                     EtauC_t_gs_app = {tuple(EtauC_t_gs_app_in_days)} days
                     EtauC_t_gs_noapp = {tuple(EtauC_t_gs_noapp_in_days)} days
                     Fsigmagsapp_t(∞) = {tuple(tausigmag_t.total_mass for tausigmag_t in tausigmagsapp_t)}
@@ -211,7 +209,7 @@ def compute_time_evolution_two_component(
                     FAc_t_app(∞) = {tauAc_t_app.total_mass},    FAc_t_noapp(∞) = {tauAc_t_noapp.total_mass}
                     FT_t_gs_app(∞) = {tuple(tauT_t_g.total_mass for tauT_t_g in tauT_t_gs_app)},
                     FT_t_gs_noapp(∞) = {tuple(tauT_t_g.total_mass for tauT_t_g in tauT_t_gs_noapp)},
-                    FT_t(∞) = {round2(FT_t_infty)}
+                    FT_t(∞) = {round(FT_t_infty, 2)}
                     """
             )
 
