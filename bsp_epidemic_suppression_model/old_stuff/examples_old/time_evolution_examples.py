@@ -2,22 +2,18 @@
 Examples running the complete algorithm in certain scenarios, and plotting the results.
 """
 
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
-    make_scenario_parameters_for_asymptomatic_symptomatic_model,
-)
-from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    DeltaMeasure,
-    RealRange,
-)
-from bsp_epidemic_suppression_model.model_utilities.plot_results import (
+import warnings
+
+from bsp_epidemic_suppression_model.algorithm_refactored.plot_results import (
     plot_time_evolution,
 )
-from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
-    compute_time_evolution,
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import RealRange
+from bsp_epidemic_suppression_model.old_stuff.epidemic_data import (
+    make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
-
-import warnings
+from bsp_epidemic_suppression_model.old_stuff.functions_utils import DeltaMeasure
+from bsp_epidemic_suppression_model.old_stuff.scenario import Scenario
+from dev.old_stuff.algorithm.time_evolution_main_function import compute_time_evolution
 
 warnings.filterwarnings("ignore")
 

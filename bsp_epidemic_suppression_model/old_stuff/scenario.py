@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Callable
+from typing import Callable, List
 
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    ImproperProbabilityDensity,
+from bsp_epidemic_suppression_model.old_stuff.functions_utils import (
     DeltaMeasure,
+    ImproperProbabilityDensity,
 )
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 if __name__ == "__main__":
     setup(
@@ -11,6 +11,6 @@ if __name__ == "__main__":
         author_email="anm@bendingspoons.com, mm@bendingspoons.com",
         url="https://github.com/MarcoMene/epidemics-suppression",
         packages=find_packages(exclude="demo"),
-        install_requires=["numpy", "scipy", "matplotlib"],
+        install_requires=["numpy", "matplotlib"],
         zip_safe=False,
     )

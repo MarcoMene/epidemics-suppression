@@ -6,13 +6,14 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 black = "==19.10b0"
-
+isort = "*"
+scipy = "*"
 epidemic-suppression-model-lib-python = {editable = true, path = "."}
 
 [packages]
 numpy = "*"
 matplotlib = "*"
-scipy = "*"
+
 
 [requires]
-python_version = "3.7"
+python_version = ">=3.7,<4.0"

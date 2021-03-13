@@ -1,8 +1,12 @@
 from dataclasses import dataclass
-
-from typing import List, Union, Callable
+from typing import Callable, List, Sequence, Union
 
 from scipy import integrate as sci_integrate
+
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
+    RealRange,
+    round2,
+)
 
 
 @dataclass
@@ -16,27 +20,9 @@ class DeltaMeasure:
 
 
 # Data types for (improper) PDFs and CDFs
-ImproperProbabilityDensity = Union[Callable[[float], float], DeltaMeasure]
-ProbabilityCumulativeFunction = Callable[[float], float]
-ImproperProbabilityCumulativeFunction = Callable[[float], float]
-
-
-@dataclass
-class RealRange:
-    """
-    Range in real numbers.
-    """
-
-    x_min: float
-    x_max: float
-    step: float
-
-    @property
-    def x_values(self):
-        return [
-            self.x_min + n * self.step
-            for n in range(int((self.x_max - self.x_min) / self.step) + 1)
-        ]
+ImproperProbabilityDensity = Union[Callable[[int], float], DeltaMeasure]
+ProbabilityCumulativeFunction = Callable[[int], float]
+ImproperProbabilityCumulativeFunction = Callable[[int], float]
 
 
 def list_from_f(f: Callable[[float], float], real_range: RealRange) -> List[float]:
@@ -64,14 +50,7 @@ def f_from_list(
     return f
 
 
-def round2(number: float) -> float:
-    """
-    Rounds a number to the second decimal.
-    """
-    return round(number, 2)
-
-
-def round2_list(l: List[float]) -> List[float]:
+def round2_sequence(l: Sequence[float]) -> List[float]:
     """
     Rounds a list of numbers to the second decimal.
     """

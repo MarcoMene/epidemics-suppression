@@ -2,21 +2,19 @@
 Contains a function that runs the algorithm several times, each with a different choice of the input parameters.
 """
 
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+import warnings
+
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import (
+    RealRange,
+    round2,
+)
+from bsp_epidemic_suppression_model.old_stuff.epidemic_data import (
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenario import Scenario
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    DeltaMeasure,
-    RealRange,
-)
-from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
-from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
-    compute_time_evolution,
-)
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import round2
-
-import warnings
+from bsp_epidemic_suppression_model.old_stuff.functions_utils import DeltaMeasure
+from bsp_epidemic_suppression_model.old_stuff.scenario import Scenario
+from dev.old_stuff.algorithm.model_blocks import effectiveness_from_R
+from dev.old_stuff.algorithm.time_evolution_main_function import compute_time_evolution
 
 warnings.filterwarnings("ignore")
 

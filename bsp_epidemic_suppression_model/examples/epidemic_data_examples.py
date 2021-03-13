@@ -2,17 +2,10 @@
 Some examples printing and plotting the epidemic data used as inputs of the model.
 """
 
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    RealRange,
-    integrate,
-)
-from bsp_epidemic_suppression_model.math_utilities.plotting_utils import plot_functions
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
-    R0,
-    rho0,
-    beta0,
-    FS,
-)
+from bsp_epidemic_suppression_model.examples.plotting_utils import plot_functions
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import RealRange
+from bsp_epidemic_suppression_model.old_stuff.epidemic_data import FS, R0, beta0, rho0
+from bsp_epidemic_suppression_model.old_stuff.functions_utils import integrate
 
 
 def plot_generation_time():

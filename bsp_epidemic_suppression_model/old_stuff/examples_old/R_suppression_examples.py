@@ -6,15 +6,10 @@ positive testing for an infected individual.
 import scipy.integrate as integrate
 from numpy import heaviside
 
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import beta0, FS
-
-from bsp_epidemic_suppression_model.math_utilities.plotting_utils import plot_functions
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import RealRange
-
-from bsp_epidemic_suppression_model.algorithm.model_blocks import (
-    suppressed_beta_from_test_cdf,
-)
-
+from bsp_epidemic_suppression_model.examples.plotting_utils import plot_functions
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import RealRange
+from bsp_epidemic_suppression_model.old_stuff.epidemic_data import FS, beta0
+from dev.old_stuff.algorithm.model_blocks import suppressed_beta_from_test_cdf
 
 tau_max = 30
 step = 0.05

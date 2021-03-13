@@ -1,28 +1,25 @@
-from matplotlib import pyplot as plt
-import numpy as np
 import math
+import warnings
 
-from bsp_epidemic_suppression_model.algorithm.model_blocks import effectiveness_from_R
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+import numpy as np
+from matplotlib import pyplot as plt
+
+from bsp_epidemic_suppression_model.math_utilities.general_utilities import RealRange
+from bsp_epidemic_suppression_model.old_stuff.epidemic_data import (
+    R0,
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
     rho0,
-    R0,
 )
-from bsp_epidemic_suppression_model.model_utilities.scenario import (
+from bsp_epidemic_suppression_model.old_stuff.functions_utils import (
+    DeltaMeasure,
+    integrate,
+)
+from bsp_epidemic_suppression_model.old_stuff.scenario import (
     Scenario,
     make_homogeneous_scenario,
 )
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    DeltaMeasure,
-    RealRange,
-    integrate,
-)
-
-from bsp_epidemic_suppression_model.algorithm.time_evolution_main_function import (
-    compute_time_evolution,
-)
-
-import warnings
+from dev.old_stuff.algorithm.model_blocks import effectiveness_from_R
+from dev.old_stuff.algorithm.time_evolution_main_function import compute_time_evolution
 
 warnings.filterwarnings("ignore")
 
