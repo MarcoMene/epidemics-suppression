@@ -153,6 +153,7 @@ def compute_time_evolution_homogeneous_case(
             and t > 10
             and (
                 abs((R[-2] - R[-1]) / R[-2]) < threshold_to_stop
+                and FT_infty[-2] != 0
                 and abs((FT_infty[-2] - FT_infty[-1]) / FT_infty[-2])
                 < threshold_to_stop
             )

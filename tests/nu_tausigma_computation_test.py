@@ -224,7 +224,7 @@ class TestNuTausigmaComputation:
     def test_tausigma_nu_computation_with_app(self):
 
         p_gs = (0.4, 0.6)
-        papp = lambda t: 0.3
+        epsilon_app = lambda t: 0.3
         rho_0 = DiscreteDistributionOnNonNegatives(
             pmf_values=[0.3, 0.4, 0.3], tau_min=1, improper=True
         )
@@ -263,7 +263,7 @@ class TestNuTausigmaComputation:
             b_noapp=[b_0_noapp],
             nu=[nu_0],
             p_gs=p_gs,
-            papp=papp,
+            epsilon_app=epsilon_app,
             b_negative_times=b_negative_times,
             nu_negative_times=nu_0,
         )
@@ -271,7 +271,7 @@ class TestNuTausigmaComputation:
         expected_nu0app_1_addends = [
             nu_0
             * p_gs[0]
-            * papp(0)
+            * epsilon_app(0)
             * c_0
             * R_0_app
             * 0.3,  # Infections from infected at t=0
@@ -282,7 +282,7 @@ class TestNuTausigmaComputation:
         expected_nu0noapp_1_addends = [
             nu_0
             * p_gs[0]
-            * (1 - papp(0))
+            * (1 - epsilon_app(0))
             * c_0
             * R_0_noapp
             * 0.3,  # Infections from infected at t=0
@@ -293,7 +293,7 @@ class TestNuTausigmaComputation:
         expected_nu1app_1_addends = [
             nu_0
             * p_gs[1]
-            * papp(0)
+            * epsilon_app(0)
             * c_1
             * R_0_app
             * 0.3,  # Infections from infected at t=0
@@ -304,7 +304,7 @@ class TestNuTausigmaComputation:
         expected_nu1noapp_1_addends = [
             nu_0
             * p_gs[1]
-            * (1 - papp(0))
+            * (1 - epsilon_app(0))
             * c_1
             * R_0_noapp
             * 0.3,  # Infections from infected at t=0

@@ -25,7 +25,7 @@ class Scenario(ABC):
     p_gs: Tuple[float, ...]  # Probabilities of having given severity
     b0_gs: Tuple[
         DiscreteDistributionOnNonNegatives, ...
-    ]  # Infectiousness distributions (t, tau) -> \beta^0_{t,g}(tau)  # TODO
+    ]  # Discretized infectiousness distributions b^0_{t,g}
     tauS: DiscreteDistributionOnNonNegatives
 
     def __post_init__(self):
@@ -36,7 +36,8 @@ class Scenario(ABC):
 
     def check_severities(self) -> None:
         """
-        Checks that all the lists referring to each severity component of the infected population have the same length.
+        Checks that all the lists referring to each severity component of
+        the infected population have the same length.
         """
         tuple_length_error = ScenarioError(
             "The tuples depending on severities must have the same length."
@@ -68,7 +69,8 @@ class HomogeneousScenario(Scenario):
         FunctionOfTimeUnit, ...
     ]  # Probabilities of (immediate) CTA after symptoms, given severity
     sc: FunctionOfTimeUnit
-    xi: FunctionOfTimeUnit  # Average reduction of the number of infected people after testing positive
+    xi: FunctionOfTimeUnit  # Average reduction of the number of infected
+    # people after testing positive
 
     DeltaAT: DiscreteDistributionOnNonNegatives
 
@@ -91,9 +93,10 @@ class ScenarioWithApp(Scenario):
     # given that source and the recipient have the app
     scnoapp: FunctionOfTimeUnit  # Probability of immediate CTA after the source tests positive,
     # given that one between the source and the recipient does not have the app
-    xi: FunctionOfTimeUnit  # Average reduction of the number of infected people after testing positive
+    xi: FunctionOfTimeUnit  # Average reduction of the number of infected
+    # people after testing positive
 
-    papp: FunctionOfTimeUnit  # papp(t) is the fraction of people with the app at absolute time t
+    epsilon_app: FunctionOfTimeUnit  # fraction of people with the app, by absolute time
 
     DeltaATapp: DiscreteDistributionOnNonNegatives
     DeltaATnoapp: DiscreteDistributionOnNonNegatives

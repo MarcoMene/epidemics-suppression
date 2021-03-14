@@ -71,8 +71,10 @@ def compute_time_evolution_with_app(
     for t in range(0, t_max + 1):
         t_in_days = t / UNITS_IN_ONE_DAY
 
-        pgs_t_app = tuple(p_g * scenario.papp(t) for p_g in scenario.p_gs)
-        pgs_t_noapp = tuple(p_g * (1 - scenario.papp(t)) for p_g in scenario.p_gs)
+        pgs_t_app = tuple(p_g * scenario.epsilon_app(t) for p_g in scenario.p_gs)
+        pgs_t_noapp = tuple(
+            p_g * (1 - scenario.epsilon_app(t)) for p_g in scenario.p_gs
+        )
 
         # Compute tausigma_t and nu_t from nu_t' and b_t' for t' = 0,...,t-1
         if t == 0 and b_negative_times is None:
@@ -95,7 +97,7 @@ def compute_time_evolution_with_app(
                 b_noapp=b_noapp,
                 nu=nu,
                 p_gs=scenario.p_gs,
-                papp=scenario.papp,
+                epsilon_app=scenario.epsilon_app,
                 b_negative_times=b_negative_times,
                 nu_negative_times=nu_start,
             )
@@ -165,7 +167,10 @@ def compute_time_evolution_with_app(
         R_t_noapp = sum(
             p_g * R_t_g for (p_g, R_t_g) in zip(scenario.p_gs, R_t_gs_noapp)
         )
-        R_t = scenario.papp(t) * R_t_app + (1 - scenario.papp(t)) * R_t_noapp
+        R_t = (
+            scenario.epsilon_app(t) * R_t_app
+            + (1 - scenario.epsilon_app(t)) * R_t_noapp
+        )
         FT_t_app_infty = sum(
             p_g * tauT_t_g_app.total_mass
             for (p_g, tauT_t_g_app, tauT_t_g_noapp) in zip(
@@ -179,19 +184,9 @@ def compute_time_evolution_with_app(
             )
         )
         FT_t_infty = (
-            scenario.papp(t) * FT_t_app_infty
-            + (1 - scenario.papp(t)) * FT_t_noapp_infty
+            scenario.epsilon_app(t) * FT_t_app_infty
+            + (1 - scenario.epsilon_app(t)) * FT_t_noapp_infty
         )
-        # FT_t_infty = sum(
-        #     p_g
-        #     * (
-        #         scenario.papp(t) * tauT_t_g_app.total_mass
-        #         + (1 - scenario.papp(t)) * tauT_t_g_noapp.total_mass
-        #     )
-        #     for (p_g, tauT_t_g_app, tauT_t_g_noapp) in zip(
-        #         scenario.p_gs, tauT_t_gs_app, tauT_t_gs_noapp
-        #     )
-        # )
 
         t_in_days_list.append(t_in_days)
         tausigma_app.append(tausigmagsapp_t)
@@ -248,6 +243,7 @@ def compute_time_evolution_with_app(
             and t > 10
             and (
                 abs((R[-2] - R[-1]) / R[-2]) < threshold_to_stop
+                and FT_infty[-2] != 0
                 and abs((FT_infty[-2] - FT_infty[-1]) / FT_infty[-2])
                 < threshold_to_stop
             )

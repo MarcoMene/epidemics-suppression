@@ -6,7 +6,7 @@ from epidemic_suppression_algorithms.model_blocks.time_evolution_block import (
     compute_tauAc_t,
     compute_tauAc_t_two_components,
 )
-from math_utilities.config import UNITS_IN_ONE_DAY
+from math_utilities.config import FLOAT_TOLERANCE_FOR_EQUALITIES, UNITS_IN_ONE_DAY
 from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
     linear_combination_discrete_distributions_by_values,
@@ -238,7 +238,7 @@ class TestAlgorithmBlock:
         scapp = 0.6
         scnoapp = 0.2
 
-        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(
+        kwargs = dict(
             t=4,
             tauT_app=[
                 (
@@ -250,7 +250,17 @@ class TestAlgorithmBlock:
                     ),
                 )
             ]
-            * 4,
+            * 3
+            + [
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.16, 0], tau_min=2, improper=True
+                    ),
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.125, 0.19], tau_min=2, improper=True
+                    ),
+                )
+            ],
             tauT_noapp=[
                 (
                     DiscreteDistributionOnNonNegatives(
@@ -283,11 +293,13 @@ class TestAlgorithmBlock:
             scnoapp_t=scnoapp,
         )
 
+        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(**kwargs)
+
         expectedchecktauT0app_4 = DiscreteDistributionOnNonNegatives(
-            pmf_values=[0.1 * 0.05 + 0.13 * 0.1, 0.13 * 0.05], tau_min=1, improper=True,
+            pmf_values=[0.1 * 0.05 + 0.13 * 0.1, 0.16 * 0.05], tau_min=1, improper=True,
         )
         expectedchecktauT1app_4 = DiscreteDistributionOnNonNegatives(
-            pmf_values=[0.11 * 0.1 + 0.19 * 0.2, 0.19 * 0.1], tau_min=1, improper=True,
+            pmf_values=[0.125 * 0.1 + 0.19 * 0.2, 0.19 * 0.1], tau_min=1, improper=True,
         )
 
         expectedchecktauT0noapp_4 = DiscreteDistributionOnNonNegatives(
@@ -326,61 +338,20 @@ class TestAlgorithmBlock:
         assert tauAc_t_noapp == expected_tauAc_t_noapp
 
         # Same, but this time with suppression
+        kwargs["xi"] = lambda t: 0.6
 
-        xi = 0.6
-
-        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(
-            t=4,
-            tauT_app=[
-                (
-                    DiscreteDistributionOnNonNegatives(
-                        pmf_values=[0.1, 0.13, 0], tau_min=2, improper=True
-                    ),
-                    DiscreteDistributionOnNonNegatives(
-                        pmf_values=[0.11, 0.19], tau_min=2, improper=True
-                    ),
-                )
-            ]
-            * 4,
-            tauT_noapp=[
-                (
-                    DiscreteDistributionOnNonNegatives(
-                        pmf_values=[0.08, 0.14, 0], tau_min=2, improper=True
-                    ),
-                    DiscreteDistributionOnNonNegatives(
-                        pmf_values=[0.12, 0.23, 0.18], tau_min=2, improper=True
-                    ),
-                )
-            ]
-            * 4,
-            tausigmagsapp_t=(
-                DiscreteDistributionOnNonNegatives(
-                    pmf_values=[0.05, 0.1, 0, 0], tau_min=1, improper=True,
-                ),
-                DiscreteDistributionOnNonNegatives(
-                    pmf_values=[0.1, 0.2, 0, 0], tau_min=1, improper=True,
-                ),
-            ),
-            tausigmagsnoapp_t=(
-                DiscreteDistributionOnNonNegatives(
-                    pmf_values=[0.1, 0.15, 0, 0], tau_min=1, improper=True,
-                ),
-                DiscreteDistributionOnNonNegatives(
-                    pmf_values=[0.15, 0.25, 0, 0], tau_min=1, improper=True,
-                ),
-            ),
-            xi=lambda t: xi,
-            scapp_t=scapp,
-            scnoapp_t=scnoapp,
-        )
+        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(**kwargs)
 
         assert all(
-            tauAc_t_app.pmf(tau) >= expected_tauAc_t_app.pmf(tau) for tau in [1, 2, 3]
+            tauAc_t_app.pmf(tau)
+            >= expected_tauAc_t_app.pmf(tau) - FLOAT_TOLERANCE_FOR_EQUALITIES
+            for tau in [1, 2, 3]
         )
         assert tauAc_t_app.total_mass > expected_tauAc_t_app.total_mass
 
         assert all(
-            tauAc_t_noapp.pmf(tau) >= expected_tauAc_t_noapp.pmf(tau)
+            tauAc_t_noapp.pmf(tau)
+            >= expected_tauAc_t_noapp.pmf(tau) - FLOAT_TOLERANCE_FOR_EQUALITIES
             for tau in [1, 2, 3]
         )
         assert tauAc_t_noapp.total_mass > expected_tauAc_t_noapp.total_mass

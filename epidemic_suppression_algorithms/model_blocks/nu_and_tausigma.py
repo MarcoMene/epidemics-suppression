@@ -119,7 +119,7 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
     b_noapp: Sequence[Tuple[DiscreteDistributionOnNonNegatives, ...]],
     nu: List[int],
     p_gs: Tuple[float, ...],
-    papp: Callable[[int], float],
+    epsilon_app: Callable[[int], float],
     b_negative_times: Optional[Tuple[DiscreteDistributionOnNonNegatives, ...]] = None,
     nu_negative_times: Optional[int] = None,
 ) -> Tuple[
@@ -140,7 +140,8 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
       for individuals without the app.
     :param nu: the number of infected people, from time 0 to t-1.
     :param p_gs: the tuple of fractions of infected people with given severity.
-    :param papp: the probability that an individual infected at t has the app, as a function of t.
+    :param epsilon_app: the probability that an individual infected at t has the app,
+    as a function of t.
     :param b_negative_times: the (optional) tuple of discretized infectiousness distributions (one
      for each severity) at times t<0. They should be normalized in such a way that R
      at negative times is 1, to give meaningful results (as we assume that nu at negative times is
@@ -157,7 +158,7 @@ def compute_tausigma_and_nu_components_at_time_t_with_app(
     gs = range(len(p_gs))
 
     # app/no app status: a = [0, 1] = [app, noapp]
-    p_as = [papp, lambda t: 1 - papp(t)]
+    p_as = [epsilon_app, lambda t: 1 - epsilon_app(t)]
     b = [b_app, b_noapp]
 
     mgsas_t = [[], []]

@@ -132,7 +132,7 @@ def plot_homogeneous_time_evolution(
 
 def plot_time_evolution_with_app(
     t_in_days_sequence: Sequence[float],
-    papp: Callable[[int], float],
+    epsilon_app: Callable[[int], float],
     Fsigmaapp_infty: Sequence[float],
     R_ts: Sequence[float],
     Rapp_ts: Sequence[float],
@@ -193,7 +193,7 @@ def plot_time_evolution_with_app(
     Pplot.set_ylim(0, 1)
     Pplot.plot(
         t_in_days_sequence,
-        [papp(t) for t in range(len(t_in_days_sequence))],
+        [epsilon_app(t) for t in range(len(t_in_days_sequence))],
         color="yellow",
         label="Prob. infected has the app",
     )

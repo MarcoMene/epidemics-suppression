@@ -35,7 +35,7 @@ def time_evolution_two_component_model_optimistic_scenario_example():
         xi=lambda t: 0.9 if t >= t_0 else 0,
         DeltaATapp=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
         DeltaATnoapp=delta_distribution(peak_tau_in_days=DeltaAT_in_days),
-        papp=lambda t: 0.5,
+        epsilon_app=lambda t: 0.5,
     )
 
     (
@@ -58,7 +58,7 @@ def time_evolution_two_component_model_optimistic_scenario_example():
 
     plot_time_evolution_with_app(
         t_in_days_sequence=t_in_days_list,
-        papp=scenario.papp,
+        epsilon_app=scenario.epsilon_app,
         Fsigmaapp_infty=Fsigmaapp_infty,
         R_ts=R,
         Rapp_ts=R_app,
@@ -95,7 +95,7 @@ def time_evolution_two_component_model_optimistic_scenario_example2():
         xi=lambda t: 0.9 if t >= t_0 else 0,
         DeltaATapp=delta_distribution(peak_tau_in_days=DeltaAT_app_in_days),
         DeltaATnoapp=delta_distribution(peak_tau_in_days=DeltaAT_noapp_in_days),
-        papp=lambda t: 0.05 * t if t < 10 else 0.5,
+        epsilon_app=lambda t: 0.05 * t if t < 10 else 0.5,
     )
 
     (
@@ -118,7 +118,7 @@ def time_evolution_two_component_model_optimistic_scenario_example2():
 
     plot_time_evolution_with_app(
         t_in_days_sequence=t_in_days_list,
-        papp=scenario.papp,
+        epsilon_app=scenario.epsilon_app,
         Fsigmaapp_infty=Fsigmaapp_infty,
         R_ts=R,
         Rapp_ts=R_app,
