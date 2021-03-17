@@ -82,8 +82,11 @@ def compute_time_evolution_with_app(
             nugsapp_t = tuple(nu_start * p_g for p_g in pgs_t_app)
             nugsnoapp_t = tuple(nu_start * p_g for p_g in pgs_t_noapp)
             nu0_t = nu_start
-            tausigmagsapp_t = tausigmagsnoapp_t = DiscreteDistributionOnNonNegatives(
-                pmf_values=[], tau_min=0, improper=True
+            tausigmagsapp_t = tausigmagsnoapp_t = tuple(
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[], tau_min=0, improper=True
+                )
+                for _ in gs
             )
         else:
             (

@@ -60,13 +60,16 @@ def compute_time_evolution_homogeneous_case(
         # Compute tausigma_t and nu_t from nu_t' and b_t' for t' = 0,...,t-1
         if t == 0 and b_negative_times is None:
             nu_t = nu_start
-            nu_t_gs = tuple(nu_t * p_g for p_g in scenario.p_gs)
+            nugs_t = tuple(nu_t * p_g for p_g in scenario.p_gs)
             nu0_t = nu_start
-            tausigmags_t = DiscreteDistributionOnNonNegatives(
-                pmf_values=[], tau_min=0, improper=True
+            tausigmags_t = tuple(
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[], tau_min=0, improper=True
+                )
+                for _ in gs
             )
         else:
-            nu_t_gs, tausigmags_t = compute_tausigma_and_nu_components_at_time_t(
+            nugs_t, tausigmags_t = compute_tausigma_and_nu_components_at_time_t(
                 t=t,
                 b=b,
                 nu=nu,
@@ -74,7 +77,7 @@ def compute_time_evolution_homogeneous_case(
                 b_negative_times=b_negative_times,
                 nu_negative_times=nu_start,
             )
-            nu0_t_gs, _ = compute_tausigma_and_nu_components_at_time_t(
+            nugs0_t, _ = compute_tausigma_and_nu_components_at_time_t(
                 t=t,
                 b=[scenario.b0_gs] * t,
                 nu=nu0,
@@ -83,8 +86,8 @@ def compute_time_evolution_homogeneous_case(
                 nu_negative_times=nu_start,
             )
 
-            nu_t = sum(nu_t_gs)  # People infected at t
-            nu0_t = sum(nu0_t_gs)  # People infected at t without isolation measures
+            nu_t = sum(nugs_t)  # People infected at t
+            nu0_t = sum(nugs0_t)  # People infected at t without isolation measures
 
             if nu_t < 0.5:  # Breaks the loop when nu_t = 0
                 break
@@ -137,7 +140,7 @@ def compute_time_evolution_homogeneous_case(
 
             print(
                 f"""t = {t_in_days} days
-                    nu_t_gs = {tuple(nu_t_gs)},   nu_t = {int(round(nu_t, 0))}
+                    nugs_t = {tuple(nugs_t)},   nu_t = {int(round(nu_t, 0))}
                     nu0_t = {int(round(nu0_t, 0))}
                     R_t_gs = {R_t_gs},    R_t = {round(R_t, 2)}
                     EtauC_t_gs = {tuple(EtauC_t_gs_in_days)} days
@@ -145,6 +148,7 @@ def compute_time_evolution_homogeneous_case(
                     FAs_t_gs(∞) = {tuple(tauAs_t_g.total_mass for tauAs_t_g in tauAs_t_gs)}
                     FAc_t(∞) = {tauAc_t.total_mass}
                     FT_t_gs(∞) = {tuple(tauT_t_g.total_mass for tauT_t_g in tauT_t_gs)},   FT_t(∞) = {round(FT_t_infty, 2)}
+                    tauT_t_gs_mean = {tuple(tauT_t_g.normalize().mean() if tauT_t_g.total_mass > 0 else None for tauT_t_g in tauT_t_gs)},
                     """
             )
 

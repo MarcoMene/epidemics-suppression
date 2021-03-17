@@ -72,6 +72,7 @@ contribution_of_symptomatics_to_R0 = (
 
 def make_scenario_parameters_for_asymptomatic_symptomatic_model(
     rho0_discrete: DiscreteDistributionOnNonNegatives = rho0_discrete,
+    R0: float = R0,
     p_sym: float = p_sym,
     contribution_of_symptomatics_to_R0: float = contribution_of_symptomatics_to_R0,
 ) -> Tuple[Tuple[float, ...], Tuple[DiscreteDistributionOnNonNegatives, ...]]:

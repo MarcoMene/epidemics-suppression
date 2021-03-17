@@ -112,7 +112,7 @@ def plot_homogeneous_time_evolution(
     # nu
     nuplot = fig.add_subplot(313)
     nuplot.set_xlabel("t (days)")
-    nuplot.set_ylabel("Probability")
+    nuplot.set_ylabel("Number of people")
     nuplot.grid(True)
     nuplot.set_xlim(0, t_max)
     nuplot.plot(

@@ -1,4 +1,7 @@
-UNITS_IN_ONE_DAY = 1  # TODO
+# Number of time instants in a day used in the discretization of the model. Increasing this
+# number improves the precision:
+UNITS_IN_ONE_DAY = 1
+
 TAU_UNIT_IN_DAYS = 1 / UNITS_IN_ONE_DAY
 
 # Max of the support of discrete distributions on non-negative times, when created approximating
