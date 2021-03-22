@@ -1,18 +1,22 @@
 [tool.poetry]
 name = "epidemics-suppression"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
-authors = ["Andrea Maiorana, Marco Meneghelli"]
+readme = "README.md"
+repository = "https://github.com/MarcoMene/epidemics-suppression"
+authors = ["Andrea Maiorana", "Marco Meneghelli"]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-matplotlib = "3.3.4"
-scipy = "1.6.1"
+
+matplotlib = "^3.3.4"
+scipy = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 black = "==19.10b0"
-isort = "*"
-pytest = "*"
+isort = "^5.7.0"
+pytest = "^6.2.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
