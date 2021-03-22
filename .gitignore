@@ -132,8 +132,7 @@ dmypy.json
 *.xml
 
 # Custom
-*/_dev
-/_dev
+**/dev
 
 notebooks/.ipynb_checkpoints
 notebooks/.ipynb_checkpoints/*

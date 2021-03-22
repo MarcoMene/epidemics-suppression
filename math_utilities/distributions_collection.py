@@ -19,6 +19,13 @@ def gamma_cdf(x: float, alpha: float, beta: float) -> float:
     return gamma.cdf(x, a=alpha, scale=1 / beta)
 
 
+def lognormal_pdf(x: float, mu: float, sigma: float) -> float:
+    """
+    PDF of log-normal distribution.
+    """
+    return norm.pdf((np.log(x) - mu) / sigma)
+
+
 def lognormal_cdf(x: float, mu: float, sigma: float) -> float:
     """
     CDF of log-normal distribution.
