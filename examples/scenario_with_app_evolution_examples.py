@@ -1,3 +1,8 @@
+"""
+Some examples running the full algorithm in the scenario with app usage.
+The examples print and plot the time evolution of the main KPIs.
+"""
+
 from epidemic_suppression_algorithms.evolution_with_app_algorithm import (
     compute_time_evolution_with_app,
 )
@@ -14,9 +19,10 @@ from model_utilities.scenarios import ScenarioWithApp
 p_gs, b0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
 
-def time_evolution_two_component_model_optimistic_scenario_example():
+def time_evolution_with_app_optimistic_scenario_example():
     """
-    Example in which there is no app usage, and the sensitivities s^S and s^C are quite high
+    Example running the full algorithm in the scenario with app usage.
+    We take high values for the sensitivities s^s, s^c for people using the app.
     """
     t_max_in_days = 20
 
@@ -53,7 +59,7 @@ def time_evolution_two_component_model_optimistic_scenario_example():
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,
-        b_negative_times=b0_gs,
+        b_negative_times=tuple(d.normalize() for d in b0_gs),
     )
 
     plot_time_evolution_with_app(
@@ -67,14 +73,13 @@ def time_evolution_two_component_model_optimistic_scenario_example():
         FT_ts_infty=FT_infty,
         FT_ts_app_infty=FT_app_infty,
         FT_ts_noapp_infty=FT_noapp_infty,
-        nu_ts=nu,
-        nu0_ts=nu0,
     )
 
 
-def time_evolution_two_component_model_pessimistic_scenario_example():
+def time_evolution_with_app_pessimistic_scenario_example():
     """
-    Example in which there is no app usage, and the sensitivities s^S and s^C are low
+    Example running the full algorithm in the scenario with app usage.
+    We take low values for the sensitivities s^s, s^c for people using the app.
     """
     t_max_in_days = 20
 
@@ -111,7 +116,7 @@ def time_evolution_two_component_model_pessimistic_scenario_example():
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,
-        b_negative_times=b0_gs,
+        b_negative_times=tuple(d.normalize() for d in b0_gs),
     )
 
     plot_time_evolution_with_app(
@@ -125,14 +130,13 @@ def time_evolution_two_component_model_pessimistic_scenario_example():
         FT_ts_infty=FT_infty,
         FT_ts_app_infty=FT_app_infty,
         FT_ts_noapp_infty=FT_noapp_infty,
-        nu_ts=nu,
-        nu0_ts=nu0,
     )
 
 
-def time_evolution_two_component_model_optimistic_scenario_gradual_app_adoption_example():
+def time_evolution_with_app_gradual_app_adoption_example():
     """
-    Example in which there is no app usage, and the sensitivities s^S and s^C are quite high
+    Example running the full algorithm in the scenario with app usage.
+    In this scenario, the app adoption increases linearly from 0 to 60% in 30 days.
     """
     t_max_in_days = 50
 
@@ -171,7 +175,7 @@ def time_evolution_two_component_model_optimistic_scenario_gradual_app_adoption_
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,
-        b_negative_times=b0_gs,
+        b_negative_times=tuple(d.normalize() for d in b0_gs),
     )
 
     plot_time_evolution_with_app(
@@ -185,6 +189,4 @@ def time_evolution_two_component_model_optimistic_scenario_gradual_app_adoption_
         FT_ts_infty=FT_infty,
         FT_ts_app_infty=FT_app_infty,
         FT_ts_noapp_infty=FT_noapp_infty,
-        nu_ts=nu,
-        nu0_ts=nu0,
     )

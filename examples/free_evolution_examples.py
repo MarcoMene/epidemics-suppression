@@ -1,3 +1,9 @@
+"""
+Examples printing the evolution of the number of infected people, given the infectiousness
+(no isolation measures are included here).
+"""
+
+
 from epidemic_suppression_algorithms.free_evolution_algorithm import (
     free_evolution_by_severity,
     free_evolution_global,
@@ -43,11 +49,3 @@ def free_evolution_by_severity_example():
         p_gs=p_gs,
         b_negative_times=b0_gs,
     )
-
-
-if __name__ == "__main__":
-    # free_evolution_by_severity_example()
-
-    # free_evolution_by_severity_example()
-
-    pass

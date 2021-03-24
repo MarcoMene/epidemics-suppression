@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Sequence
 
 from math_utilities.config import FLOAT_TOLERANCE_FOR_EQUALITIES
@@ -29,21 +28,3 @@ def float_sequences_match(
 
 def effectiveness(R: float, R0: float) -> float:
     return 1 - R / R0
-
-
-@dataclass
-class RealRange:
-    """
-    Range in real numbers.
-    """
-
-    x_min: float
-    x_max: float
-    step: float
-
-    @property
-    def x_values(self):
-        return [
-            self.x_min + n * self.step
-            for n in range(int((self.x_max - self.x_min) / self.step) + 1)
-        ]

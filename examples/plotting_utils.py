@@ -1,3 +1,7 @@
+"""
+Functions used for plotting in the examples.
+"""
+
 from typing import Callable, Optional, Sequence
 
 import matplotlib.pyplot as plt
@@ -6,30 +10,7 @@ from math_utilities.config import UNITS_IN_ONE_DAY
 from math_utilities.discrete_distributions_utils import (
     DiscreteDistributionOnNonNegatives,
 )
-from math_utilities.general_utilities import RealRange, effectiveness
-
-
-def plot_functions(
-    fs: Sequence[Callable[[float], float]],
-    real_range: RealRange,
-    custom_labels: Optional[Sequence[str]] = None,
-    title: Optional[str] = None,
-):
-    """
-    Util to plot a list of functions with given range and step.
-    """
-    if custom_labels is None:
-        labels = [str(i) for i in range(len(fs))]
-    else:
-        labels = custom_labels
-    for i, f in enumerate(fs):
-        plt.plot(
-            real_range.x_values, [f(x) for x in real_range.x_values], label=labels[i]
-        )
-    if len(fs) > 1 or custom_labels is not None:
-        plt.legend()
-    plt.title(title)
-    plt.show()
+from math_utilities.general_utilities import effectiveness
 
 
 def plot_discrete_distributions(
@@ -39,6 +20,9 @@ def plot_discrete_distributions(
     tau_max: Optional[float] = None,
     plot_cdfs: bool = False,
 ):
+    """
+    Function that plots the PMFs or CDFs of a collection of discrete distributions on [0,+\infty).
+    """
     if tau_max is None:
         tau_max = max(d.tau_max for d in ds)
     tau_range = range(0, tau_max + 1)
@@ -141,11 +125,9 @@ def plot_time_evolution_with_app(
     FT_ts_infty: Sequence[float],
     FT_ts_app_infty: Sequence[float],
     FT_ts_noapp_infty: Sequence[float],
-    nu_ts: Sequence[float],
-    nu0_ts: Sequence[float],
 ) -> None:
     """
-    Plots the time evolution of R_t, FT_t(∞), nu_t in the scenario with app.
+    Plots the time evolution of R_t, FT_t(∞) in the scenario with app.
     """
     fig = plt.figure(figsize=(10, 15))
 
@@ -222,25 +204,5 @@ def plot_time_evolution_with_app(
         label="Prob. that infected without app tests positive",
     )
     Pplot.legend()
-
-    plt.show()
-
-    # nu
-    nuplot = fig.add_subplot(313)
-    nuplot.set_xlabel("t (days)")
-    nuplot.set_ylabel("Probability")
-    nuplot.grid(True)
-    nuplot.set_xlim(0, t_max)
-    nuplot.plot(
-        t_in_days_sequence, nu_ts, color="black", label="Number of infected",
-    )
-    nuplot.plot(
-        t_in_days_sequence,
-        nu0_ts,
-        color="gray",
-        label="Number of infected without measures",
-    )
-
-    nuplot.legend()
 
     plt.show()

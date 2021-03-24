@@ -1,5 +1,6 @@
 """
-Some examples of computations of the suppressed effective reproduction number, given the distribution of the time of
+Some examples of computations of the suppressed effective reproduction number,
+given the default infectiousness and the distribution of the time of
 positive testing for an infected individual.
 """
 
@@ -20,8 +21,8 @@ step = 0.05
 
 def R_suppression_with_fixed_testing_time():
     """
-    Example computing the suppressed beta and R, given that all individuals are tested
-    at a given instant tau_s.
+    Example computing the suppressed infectiousness and R, assuming that all individuals are tested
+    at a given infectious age tau_s.
     """
     tau_s_in_days = 7
 
@@ -42,8 +43,8 @@ def R_suppression_with_fixed_testing_time():
 
 def R_suppression_due_to_symptoms_only():
     """
-    Example computing the suppressed beta and R, given that the testing time CDF F^T is just a traslation and rescaling
-    of the symptoms onset CDF F^S.
+    Example computing the suppressed infectiousness and R, given that the testing time CDF F^T
+    is obtained by translating and rescaling the symptoms onset CDF F^S.
     """
     Deltat_test = 4
     ss = 0.2

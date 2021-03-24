@@ -1,3 +1,8 @@
+"""
+Some examples running the full algorithm in the homogeneous scenario (no app usage).
+The examples print and plot the time evolution of the main KPIs.
+"""
+
 from epidemic_suppression_algorithms.homogeneous_evolution_algorithm import (
     compute_time_evolution_homogeneous_case,
 )
@@ -13,9 +18,9 @@ from model_utilities.scenarios import HomogeneousScenario
 p_gs, b0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
 
 
-def time_evolution_homogeneous_model_optimistic_scenario_example():
+def time_evolution_homogeneous_model_example():
     """
-    Example in which there is no app usage, and the sensitivities s^S and s^C are quite high
+    Example running the full algorithm in the homogeneous scenario (no app usage).
     """
     t_max_in_days = 20
 
@@ -43,7 +48,7 @@ def time_evolution_homogeneous_model_optimistic_scenario_example():
         scenario=scenario,
         t_max_in_days=t_max_in_days,
         nu_start=1000,
-        b_negative_times=b0_gs,
+        b_negative_times=tuple(d.normalize() for d in b0_gs),
         threshold_to_stop=0.001,
     )
 
@@ -57,9 +62,10 @@ def time_evolution_homogeneous_model_optimistic_scenario_example():
     )
 
 
-def time_evolution_homogeneous_model_optimistic_scenario_example_no_negative_times():
+def time_evolution_homogeneous_model_example_no_negative_times():
     """
-    Example in which there is no app usage, and the sensitivities s^S and s^C are quite high
+    Example running the full algorithm in the homogeneous scenario (no app usage).
+    In this case we assume that there are no infected people at t<0.
     """
     t_max_in_days = 20
 
