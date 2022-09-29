@@ -8,13 +8,20 @@ into symptomatic and asymptomatic.
 The source for all the numeric values is
 https://science.sciencemag.org/content/368/6491/eabb6936
 """
-from typing import Tuple, List, Callable
+from typing import Tuple
 
-from bsp_epidemic_suppression_model.math_utilities.distributions import (
-    lognormal_cdf,
-    weibull_pdf,
+from math_utilities.config import (
+    DISTRIBUTION_NORMALIZATION_TOLERANCE,
+    TAU_MAX_IN_UNITS,
+    TAU_UNIT_IN_DAYS,
+    UNITS_IN_ONE_DAY,
 )
-
+from math_utilities.discrete_distributions_utils import (
+    DiscreteDistributionOnNonNegatives,
+    generate_discrete_distribution_from_cdf_function,
+    generate_discrete_distribution_from_pdf_function,
+)
+from math_utilities.distributions_collection import lognormal_cdf, weibull_pdf
 
 # Default effective reproduction number
 R0 = 1
@@ -29,9 +36,15 @@ def rho0(tau: float) -> float:
     return weibull_pdf(tau, k, lambda_)
 
 
-def beta0(tau: float) -> float:
-    """Default infectiousness."""
-    return R0 * rho0(tau)
+rho0_discrete = generate_discrete_distribution_from_pdf_function(
+    pdf=lambda tau: rho0(tau * TAU_UNIT_IN_DAYS) * TAU_UNIT_IN_DAYS,
+    tau_min=1,
+    tau_max=TAU_MAX_IN_UNITS,
+    normalize=True,
+)
+
+# Default infectiousness
+b0 = rho0_discrete.rescale_by_factor(R0)
 
 
 # Incubation period distribution
@@ -40,13 +53,13 @@ incubation_mu = 1.644
 incubation_sigma = 0.363
 
 
-def FS(tau: float) -> float:
-    """
-    Cumulative distribution of the time of symptoms onset.
-    """
-    if tau > 0:
-        return lognormal_cdf(tau, incubation_mu, incubation_sigma)
-    return 0
+tauS = generate_discrete_distribution_from_cdf_function(
+    cdf=lambda tau: lognormal_cdf(
+        tau / UNITS_IN_ONE_DAY, incubation_mu, incubation_sigma
+    ),
+    tau_min=1,
+    tau_max=TAU_MAX_IN_UNITS,
+).normalize()
 
 
 # Data for the "two-components model" (asymptomatic and symptomatic individuals)
@@ -58,13 +71,17 @@ contribution_of_symptomatics_to_R0 = (
 
 
 def make_scenario_parameters_for_asymptomatic_symptomatic_model(
-    rho0: Callable[[float], float] = rho0,
+    rho0_discrete: DiscreteDistributionOnNonNegatives = rho0_discrete,
+    R0: float = R0,
     p_sym: float = p_sym,
     contribution_of_symptomatics_to_R0: float = contribution_of_symptomatics_to_R0,
-) -> Tuple[List[float], List[Callable[[float, float], float]]]:
+) -> Tuple[Tuple[float, ...], Tuple[DiscreteDistributionOnNonNegatives, ...]]:
     """
-    Returns the lists p_gs and β0_gs for the "two-components model" for the severity, namely for asymptomatic and
-    symptomatic individuals.
+    Returns the couples p_gs and b0_gs for the "two-components model" for the severity,
+    namely for asymptomatic and symptomatic individuals.
+    :param rho0: the generation time distribution.
+    :param p_sym: the fraction of infected individuals that are symptomatic
+    :param contribution_of_symptomatics_to_R0: the fraction of R0 due to symptomatic individuals.
     """
     p_asy = 1 - p_sym  # Fraction of infected individuals who are asymptomatic.
 
@@ -75,17 +92,15 @@ def make_scenario_parameters_for_asymptomatic_symptomatic_model(
         contribution_of_symptomatics_to_R0 / p_sym * R0 if p_sym > 0 else 0
     )
 
-    assert round(R0 - p_sym * R0_sym - p_asy * R0_asy, 7) == 0
+    assert (
+        abs(R0 - p_sym * R0_sym - p_asy * R0_asy) < DISTRIBUTION_NORMALIZATION_TOLERANCE
+    )
 
-    def beta0_asy(tau: float):
-        """Default infectiousness for asymptomatic individuals."""
-        return R0_asy * rho0(tau)
+    p_gs = (1 - p_sym, p_sym)
 
-    def beta0_sym(tau: float):
-        """Default infectiousness for symptomatic individuals."""
-        return R0_sym * rho0(tau)
+    b0_gs = (
+        rho0_discrete.rescale_by_factor(R0_asy),
+        rho0_discrete.rescale_by_factor(R0_sym),
+    )
 
-    p_gs = [1 - p_sym, p_sym]
-    beta0_gs = [lambda t, tau: beta0_asy(tau), lambda t, tau: beta0_sym(tau)]
-
-    return p_gs, beta0_gs
+    return p_gs, b0_gs

@@ -1,168 +1,357 @@
-from bsp_epidemic_suppression_model.algorithm.model_blocks import (
-    compute_FA_from_FAs_and_previous_step_data,
-    compute_FT_from_FA_and_DeltaAT,
-    compute_beta_and_R_components_from_FT,
+from epidemic_suppression_algorithms.model_blocks.testing_time_and_b_t_suppression import (
+    compute_suppressed_b_t,
+    compute_tauT_t,
 )
-
-from bsp_epidemic_suppression_model.model_utilities.epidemic_data import (
+from epidemic_suppression_algorithms.model_blocks.time_evolution_block import (
+    compute_tauAc_t,
+    compute_tauAc_t_two_components,
+)
+from math_utilities.config import FLOAT_TOLERANCE_FOR_EQUALITIES, UNITS_IN_ONE_DAY
+from math_utilities.discrete_distributions_utils import (
+    DiscreteDistributionOnNonNegatives,
+    linear_combination_discrete_distributions_by_values,
+)
+from math_utilities.general_utilities import floats_match
+from model_utilities.epidemic_data import (
     make_scenario_parameters_for_asymptomatic_symptomatic_model,
-)
-
-from bsp_epidemic_suppression_model.math_utilities.functions_utils import (
-    DeltaMeasure,
-    RealRange,
-    integrate,
 )
 
 
 class TestAlgorithmBlock:
     """Tests each block of the algorithm separately"""
 
-    def test_R_suppression(self):
-        _, beta0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
-        beta0_ti_gs = [lambda tau: beta0_gs[0](0, tau), lambda tau: beta0_gs[1](0, tau)]
+    def test_b_suppression(self):
+        _, b0_gs = make_scenario_parameters_for_asymptomatic_symptomatic_model()
+        R0_gs = tuple(b0_gs[g].total_mass for g in [0, 1])
         xi = 0.8  # Any value in [0,1] will do
-        tau_max = 30
 
-        FTapp_ti_gs = [
-            lambda tau: 0,
-            lambda tau: 1 if tau >= 10 else 0,
-        ]
-        FTnoapp_ti_gs = [
-            lambda tau: 0,
-            lambda tau: 1 if tau >= 20 else 0,
-        ]
+        tauT_peak = 10 * UNITS_IN_ONE_DAY
 
-        (
-            betaapp_ti_gs,
-            betanoapp_ti_gs,
-            Rapp_ti_gs,
-            Rnoapp_ti_gs,
-        ) = compute_beta_and_R_components_from_FT(
-            FTapp_ti_gs=FTapp_ti_gs,
-            FTnoapp_ti_gs=FTnoapp_ti_gs,
-            beta0_ti_gs=beta0_ti_gs,
-            xi=xi,
-            tau_max=tau_max,
+        tauT_gs = (
+            DiscreteDistributionOnNonNegatives(
+                pmf_values=[0], tau_min=0, improper=True
+            ),
+            DiscreteDistributionOnNonNegatives(pmf_values=[1], tau_min=tauT_peak),
         )
 
-        R0_gs = [integrate(f=beta0_ti_gs[g], a=0, b=tau_max) for g in [0, 1]]
+        b_t_gs = compute_suppressed_b_t(b0_t_gs=b0_gs, tauT_t_gs=tauT_gs, xi_t=xi)
 
-        # No suppression for asymptomatic:
+        R_t_gs = tuple(b_t_gs[g].total_mass for g in [0, 1])
+
+        assert b_t_gs[0] == b0_gs[0]  # No suppression for asymptomatics
+        assert R_t_gs[0] == R0_gs[0]
+
         assert all(
-            beta0_ti_gs[0](tau) == betaapp_ti_gs[0](tau) == betanoapp_ti_gs[0](tau)
-            for tau in (0, 3, 6, 9, 12, 15)
+            b_t_gs[1].pmf(tau * UNITS_IN_ONE_DAY)
+            == b0_gs[1].pmf(tau * UNITS_IN_ONE_DAY)
+            for tau in (0, 3, 6, 9)
         )
-        assert Rapp_ti_gs[0] == Rnoapp_ti_gs[0] == R0_gs[0]
-        # For symptomatic with app, suppression for tau >= 10
-        assert all(beta0_ti_gs[1](tau) == betaapp_ti_gs[1](tau) for tau in (0, 3, 6, 9))
         assert all(
-            betaapp_ti_gs[1](tau) == (1 - xi) * beta0_ti_gs[1](tau)
+            b_t_gs[1].pmf(tau * UNITS_IN_ONE_DAY)
+            == (1 - xi) * b0_gs[1].pmf(tau * UNITS_IN_ONE_DAY)
             for tau in (10, 13, 16, 19)
         )
-        assert (1 - xi) * R0_gs[1] <= Rapp_ti_gs[1] <= R0_gs[1]
-        # For symptomatic without app, suppression for tau >= 20
-        assert all(
-            beta0_ti_gs[1](tau) == betanoapp_ti_gs[1](tau)
-            for tau in (0, 3, 6, 9, 12, 15, 18)
-        )
-        assert all(
-            betanoapp_ti_gs[1](tau) == (1 - xi) * beta0_ti_gs[1](tau)
-            for tau in (20, 25)
-        )
-        assert (1 - xi) * R0_gs[1] <= Rnoapp_ti_gs[1] <= R0_gs[1]
+        assert (1 - xi) * R0_gs[1] <= R_t_gs[1] <= R0_gs[1]
 
-    def test_compute_FT(self):
-        FAapp_ti_gs = [
-            lambda tau: 0.4,
-            lambda tau: 1 if tau >= 10 else 0.5,
-        ]
-        FAnoapp_ti_gs = [
-            lambda tau: 0.5 if tau >= 20 else 0,
-            lambda tau: 1 if tau >= 20 else 0.3,
-        ]
-
-        position_app = 1
-        position_noapp = 5
-        p_DeltaATapp = DeltaMeasure(position=position_app)
-        p_DeltaATnoapp = DeltaMeasure(position=position_noapp)
-
-        real_range = RealRange(x_min=0, x_max=30, step=0.1)
-
-        FTapp_ti_gs, FTnoapp_ti_gs = compute_FT_from_FA_and_DeltaAT(
-            FAapp_ti_gs=FAapp_ti_gs,
-            FAnoapp_ti_gs=FAnoapp_ti_gs,
-            p_DeltaATapp=p_DeltaATapp,
-            p_DeltaATnoapp=p_DeltaATnoapp,
-        )
-
-        # Check that each FT component is the translation of the respective FA component
-
-        assert all(
-            FAapp_ti_gs[0](tau - position_app) == FTapp_ti_gs[0](tau)
-            for tau in (-10, -2, 0, 2, 5, 10, 20, 30)
-        )
-        assert all(
-            FAapp_ti_gs[1](tau - position_app) == FTapp_ti_gs[1](tau)
-            for tau in (-10, -2, 0, 2, 5, 10, 20, 30)
-        )
-        assert not all(
-            FAapp_ti_gs[1](tau) == FTapp_ti_gs[1](tau) for tau in (8, 10, 12)
-        )
-        assert all(
-            FAnoapp_ti_gs[0](tau - position_noapp) == FTnoapp_ti_gs[0](tau)
-            for tau in (-10, 10, 20, 22, 27, 30)
-        )
-        assert all(
-            FAnoapp_ti_gs[1](tau - position_noapp) == FTnoapp_ti_gs[1](tau)
-            for tau in (-10, 10, 20, 22, 27, 30)
-        )
-        assert not all(
-            FAnoapp_ti_gs[1](tau) == FTnoapp_ti_gs[1](tau) for tau in (18, 20, 22)
-        )
-
-    def test_compute_FA(self):
+    def test_compute_tauT(self):
         # No contact tracing without app
+        tauAs_peak = 5 * UNITS_IN_ONE_DAY
+        tauAs_t_gs = (
+            DiscreteDistributionOnNonNegatives(
+                pmf_values=[0], tau_min=0, improper=True
+            ),
+            DiscreteDistributionOnNonNegatives(pmf_values=[1], tau_min=tauAs_peak),
+        )
 
-        FAsapp_ti_gs = [lambda tau: 0, lambda tau: 1]
-        FAsnoapp_ti_gs = [lambda tau: 0] * 2
+        # Uniform distribution from 0 to 6 (excluded),  with total mass 0.6
+        tau_Ac_t = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1 / UNITS_IN_ONE_DAY] * 6 * UNITS_IN_ONE_DAY,
+            tau_min=0,
+            improper=True,
+        )
+        assert floats_match(tau_Ac_t.total_mass, 0.6)
 
-        tildeFTapp_tim1 = lambda tau: 1 if tau >= 10 else 0.5
+        DeltaAT_peak = 2 * UNITS_IN_ONE_DAY
+        DeltaAT = DiscreteDistributionOnNonNegatives(
+            pmf_values=[1], tau_min=DeltaAT_peak
+        )
 
-        tildepapp_tim1 = 0.5
-        EtauC_tim1 = 3
-
-        FAapp_ti_gs, FAnoapp_ti_gs = compute_FA_from_FAs_and_previous_step_data(
-            FAsapp_ti_gs=FAsapp_ti_gs,
-            FAsnoapp_ti_gs=FAsnoapp_ti_gs,
-            tildepapp_tim1=tildepapp_tim1,
-            tildeFTapp_tim1=tildeFTapp_tim1,
-            tildeFTnoapp_tim1=lambda tau: 0,
-            EtauC_tim1=EtauC_tim1,
-            scapp=1,
-            scnoapp=0,
+        tauT_t_gs = compute_tauT_t(
+            tauAs_t_gs=tauAs_t_gs, tauAc_t=tau_Ac_t, DeltaAT=DeltaAT
         )
 
         # Expected results
-        # FAc_ti is:
-        # - tildeFTapp_tim1 multiplied by tildepapp_tim1 and translated by EtauC_tim1 to the left for who has the app
-        # - zero otherwise:
-        FAcapp_ti = lambda tau: tildepapp_tim1 * tildeFTapp_tim1(tau + EtauC_tim1)
-        FAcnoapp_ti = lambda tau: 0
+        tau_A_gs = (
+            tau_Ac_t,
+            DiscreteDistributionOnNonNegatives(
+                pmf_values=[0.1 / UNITS_IN_ONE_DAY] * 5 * UNITS_IN_ONE_DAY + [0.5],
+                tau_min=0,
+                improper=True,
+            ),
+        )
 
-        for g in (0, 1):
-            # FA = FAs + FAc - FAs * FAt
-            assert all(
-                FAapp_ti_gs[g](tau)
-                == FAsapp_ti_gs[g](tau)
-                + FAcapp_ti(tau)
-                - FAsapp_ti_gs[g](tau) * FAcapp_ti(tau)
-                for tau in (-10, 0, 8, 10, 12, 15, 20)
-            )
-            assert all(
-                FAnoapp_ti_gs[g](tau)
-                == FAsnoapp_ti_gs[g](tau)
-                + FAcnoapp_ti(tau)
-                - FAsnoapp_ti_gs[g](tau) * FAcnoapp_ti(tau)
-                for tau in (-10, 0, 8, 10, 12, 15, 20)
-            )
+        assert all(tauT_t_gs[g] == tau_A_gs[g] + DeltaAT_peak for g in (0, 1))
+
+    def test_compute_tauAc(self):
+        """
+        Tests the time evolution equation in the homogeneous scenario.
+        """
+
+        # 1 - No suppression, one component, one contribution
+        sc = 0.5
+        tauAc_t = compute_tauAc_t(
+            t=1,
+            tauT=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0.3], tau_min=2, improper=True
+                    ),
+                )
+            ],
+            tausigmags_t=(
+                DiscreteDistributionOnNonNegatives(pmf_values=[1], tau_min=1),
+            ),
+            xi=lambda t: 0,
+            sc_t=sc,
+        )
+        expected_tauAc_t = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1, 0.2, 0.3], tau_min=1, improper=True
+        ).rescale_by_factor(sc)
+        assert tauAc_t == expected_tauAc_t
+
+        # 2 - No suppression, one component, one cut contribution
+        sc = 0.5
+        tauAc_t = compute_tauAc_t(
+            t=1,
+            tauT=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0.3], tau_min=1, improper=True
+                    ),
+                )
+            ],
+            tausigmags_t=(
+                DiscreteDistributionOnNonNegatives(pmf_values=[1], tau_min=1),
+            ),
+            xi=lambda t: 0,
+            sc_t=sc,
+        )
+        expected_tauAc_t = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.2, 0.3], tau_min=1, improper=True
+        ).rescale_by_factor(sc)
+        assert tauAc_t == expected_tauAc_t
+
+        # 3 - No suppression, one component, two contributions
+        sc = 0.5
+        tauAc_t = compute_tauAc_t(
+            t=3,
+            tauT=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0.3], tau_min=2, improper=True
+                    ),
+                )
+            ]
+            * 3,
+            tausigmags_t=(
+                DiscreteDistributionOnNonNegatives(pmf_values=[0.4, 0.6, 0], tau_min=1),
+            ),
+            xi=lambda t: 0,
+            sc_t=sc,
+        )
+        expected_tauAc_t = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1 * 0.4 + 0.2 * 0.6, 0.2 * 0.4 + 0.3 * 0.6, 0.3 * 0.4],
+            tau_min=1,
+            improper=True,
+        ).rescale_by_factor(sc)
+        assert tauAc_t == expected_tauAc_t
+
+        # 4 - With suppression, one component, two contributions
+        sc = 0.5
+        xi = 0.6
+        tauAc_t = compute_tauAc_t(
+            t=3,
+            tauT=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0.3], tau_min=2, improper=True
+                    ),
+                )
+            ]
+            * 3,
+            tausigmags_t=(
+                DiscreteDistributionOnNonNegatives(pmf_values=[0.4, 0.6, 0], tau_min=1),
+            ),
+            xi=lambda t: xi,
+            sc_t=sc,
+        )
+        assert all(tauAc_t.pmf(tau) >= expected_tauAc_t.pmf(tau) for tau in [1, 2, 3])
+        assert tauAc_t.total_mass > expected_tauAc_t.total_mass
+
+        # 5 - No suppression, two components, two contributions
+        xi = 0
+        sc = 0.6
+        tauAc_t = compute_tauAc_t(
+            t=4,
+            tauT=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0], tau_min=2, improper=True
+                    ),
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.2, 0.3], tau_min=2, improper=True
+                    ),
+                )
+            ]
+            * 4,
+            tausigmags_t=(
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.1, 0.2, 0, 0], tau_min=1, improper=True,
+                ),
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.3, 0.4, 0, 0], tau_min=1, improper=True,
+                ),
+            ),
+            xi=lambda t: xi,
+            sc_t=sc,
+        )
+        expectedchecktauT0_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1 * 0.1 + 0.2 * 0.2, 0.2 * 0.1], tau_min=1, improper=True,
+        )
+        expectedchecktauT1_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1 * 0.3 + 0.2 * 0.4, 0.2 * 0.3 + 0.3 * 0.4, 0.3 * 0.3],
+            tau_min=1,
+            improper=True,
+        )
+
+        expected_tauAc_t = linear_combination_discrete_distributions_by_values(
+            scalars=[sc, sc], seq=[expectedchecktauT0_4, expectedchecktauT1_4],
+        )
+        assert tauAc_t == expected_tauAc_t
+
+    def test_compute_tauAc_with_app(self):
+        """
+        Tests the time evolution equation in the scenario with app.
+        """
+
+        xi = 0
+        scapp = 0.6
+        scnoapp = 0.2
+
+        kwargs = dict(
+            t=4,
+            tauT_app=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.13, 0], tau_min=2, improper=True
+                    ),
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.11, 0.19], tau_min=2, improper=True
+                    ),
+                )
+            ]
+            * 3
+            + [
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.1, 0.16, 0], tau_min=2, improper=True
+                    ),
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.125, 0.19], tau_min=2, improper=True
+                    ),
+                )
+            ],
+            tauT_noapp=[
+                (
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.08, 0.14, 0], tau_min=2, improper=True
+                    ),
+                    DiscreteDistributionOnNonNegatives(
+                        pmf_values=[0.12, 0.23, 0.18], tau_min=2, improper=True
+                    ),
+                )
+            ]
+            * 4,
+            tausigmagsapp_t=(
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.05, 0.1, 0, 0], tau_min=1, improper=True,
+                ),
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.1, 0.2, 0, 0], tau_min=1, improper=True,
+                ),
+            ),
+            tausigmagsnoapp_t=(
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.1, 0.15, 0, 0], tau_min=1, improper=True,
+                ),
+                DiscreteDistributionOnNonNegatives(
+                    pmf_values=[0.15, 0.25, 0, 0], tau_min=1, improper=True,
+                ),
+            ),
+            xi=lambda t: xi,
+            scapp_t=scapp,
+            scnoapp_t=scnoapp,
+        )
+
+        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(**kwargs)
+
+        expectedchecktauT0app_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.1 * 0.05 + 0.13 * 0.1, 0.16 * 0.05], tau_min=1, improper=True,
+        )
+        expectedchecktauT1app_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.125 * 0.1 + 0.19 * 0.2, 0.19 * 0.1], tau_min=1, improper=True,
+        )
+
+        expectedchecktauT0noapp_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[0.08 * 0.1 + 0.14 * 0.15, 0.14 * 0.1], tau_min=1, improper=True,
+        )
+        expectedchecktauT1noapp_4 = DiscreteDistributionOnNonNegatives(
+            pmf_values=[
+                0.12 * 0.15 + 0.23 * 0.25,
+                0.23 * 0.15 + 0.18 * 0.25,
+                0.18 * 0.15,
+            ],
+            tau_min=1,
+            improper=True,
+        )
+
+        expected_tauAc_t_app = linear_combination_discrete_distributions_by_values(
+            scalars=[scapp, scapp, scnoapp, scnoapp],
+            seq=[
+                expectedchecktauT0app_4,
+                expectedchecktauT1app_4,
+                expectedchecktauT0noapp_4,
+                expectedchecktauT1noapp_4,
+            ],
+        )
+
+        expected_tauAc_t_noapp = linear_combination_discrete_distributions_by_values(
+            scalars=[scnoapp, scnoapp, scnoapp, scnoapp],
+            seq=[
+                expectedchecktauT0app_4,
+                expectedchecktauT1app_4,
+                expectedchecktauT0noapp_4,
+                expectedchecktauT1noapp_4,
+            ],
+        )
+        assert tauAc_t_app == expected_tauAc_t_app
+        assert tauAc_t_noapp == expected_tauAc_t_noapp
+
+        # Same, but this time with suppression
+        kwargs["xi"] = lambda t: 0.6
+
+        tauAc_t_app, tauAc_t_noapp = compute_tauAc_t_two_components(**kwargs)
+
+        assert all(
+            tauAc_t_app.pmf(tau)
+            >= expected_tauAc_t_app.pmf(tau) - FLOAT_TOLERANCE_FOR_EQUALITIES
+            for tau in [1, 2, 3]
+        )
+        assert tauAc_t_app.total_mass > expected_tauAc_t_app.total_mass
+
+        assert all(
+            tauAc_t_noapp.pmf(tau)
+            >= expected_tauAc_t_noapp.pmf(tau) - FLOAT_TOLERANCE_FOR_EQUALITIES
+            for tau in [1, 2, 3]
+        )
+        assert tauAc_t_noapp.total_mass > expected_tauAc_t_noapp.total_mass
